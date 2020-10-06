@@ -1,0 +1,60 @@
+{
+    "parties": [
+        {
+            "name": "The Social Democratic Party",
+            "link": "http://socialdemokraterne.dk/da"
+        },
+        {
+            "name": "The Liberal Party",
+            "link": "http://www.venstre.dk/"
+        },
+        {
+            "name": "The Danish People's Party",
+            "link": "https://danskfolkeparti.dk/"
+        },
+        {
+            "name": "The Social Liberal Party",
+            "link": "https://www.radikale.dk/"
+        },
+        {
+            "name": "The Socialist People\u2019s Party",
+            "link": "http://www.sf.dk/english"
+        },
+        {
+            "name": "The Red-Green Alliance",
+            "link": "http://org.enhedslisten.dk/content/red-green-alliance"
+        },
+        {
+            "name": "The Conservative Party",
+            "link": "http://www.konservative.dk/"
+        },
+        {
+            "name": "The New Right",
+            "link": "https://nyeborgerlige.dk/"
+        },
+        {
+            "name": "The Liberal Alliance",
+            "link": "https://www.liberalalliance.dk/"
+        },
+        {
+            "name": "The Alternative",
+            "link": "http://alternativet.dk/"
+        },
+        {
+            "name": "Inuit Ataqatigiit",
+            "link": "http://www.ia.gl/"
+        },
+        {
+            "name": "Siumut",
+            "link": "http://siumut.gl/"
+        },
+        {
+            "name": "Sambandsflokkurin",
+            "link": "http://www.samband.fo/"
+        },
+        {
+            "name": "Javna\u00f0arflokkurin",
+            "link": "http://www.j.fo/"
+        }
+    ]
+}
