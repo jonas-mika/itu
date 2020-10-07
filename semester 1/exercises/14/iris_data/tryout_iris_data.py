@@ -74,4 +74,5 @@ def main():
     histograms.savefig("output_plots/Attribute Histograms of Iris Classes.pdf")
 
 if __name__ == "__main__":
+    print("Plotting...")
     main()
