@@ -1,12 +1,9 @@
 import numpy as np
 
-array_data = [[1,2], [3,4]]
+# a = np.array([[1,2], [3,4]])
+# print(type(a))
+# print(np.ndim(a))
 
-M = np.array()
-print(M)
-print("________________")
-dimension = np.ndim(M)
-#print(dimension)
 
-print(m[1]) 
-
+b = np.arange(-1,0,0.5)
+print(b)
