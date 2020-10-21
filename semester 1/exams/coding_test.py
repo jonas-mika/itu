@@ -8,6 +8,7 @@
 import collections
 
 
+
 def read_csv(filename):
     dict = {}
 
