@@ -3,7 +3,7 @@ import random
 class Card:
 
     def __init__(self, rank, suit):
-        assert type(rank) == int, "Please insert the Data Tupe Integer as a Rank"
+        assert type(rank) == int, "Please insert the Data Type Integer as a Rank"
         assert 1 <= rank <= 13, "The Rank needs to be within the range 1-13"
         self.rank = rank        
         
