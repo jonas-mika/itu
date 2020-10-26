@@ -54,6 +54,33 @@ class Card:
 
         return "{} of {}".format(faces[self.rank], suits[self.suit])
 
+
+    def __repr__(self):
+        suits = {
+            "d": "Diamonds", 
+            "c": "Clubs", 
+            "h": "Hearts", 
+            "s": "Spades"
+            }
+            
+        faces = {
+            1: "Ace",
+            2: "Two",
+            3: "Three", 
+            4: "Four",
+            5: "Five", 
+            6: "Six",
+            7: "Seven",
+            8: "Eight", 
+            9: "Nine",
+            10: "Ten",
+            11: "Jack",
+            12 :"Queen", 
+            13: "King", 
+            }
+
+        return "{} of {}".format(faces[self.rank], suits[self.suit]) 
+
 class Player:
     """ A Class representing a Player in a game of War """
 
