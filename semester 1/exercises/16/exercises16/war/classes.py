@@ -1,6 +1,7 @@
-import random
+# Contains Classes used for the Game War
 
 class Card:
+    """ A class representing a card from a standard card deck """
 
     def __init__(self, rank, suit):
         assert type(rank) == int, "Please insert the Data Type Integer as a Rank"
@@ -53,24 +54,11 @@ class Card:
 
         return "{} of {}".format(faces[self.rank], suits[self.suit])
 
-def generate_regular_deck():
-    for suit in "chsd":
-        for rank in range(1,13+1):
-            regular_deck = [Card(rank, suit)]
-    
-    return regular_deck
+class Player:
+    """ A Class representing a Player in a game of War """
 
-def shuffle():
-    """Return shuffled regular deck"""
-    pass
+    def __init__(self):
+        pass
 
-def assign_cards():
-    pass
-
-def play_war():
-    print(generate_regular_deck)
-    # shuffle the deck
-    # split the deck randomly into two halfs
-
-
-play_war()
+    def getCards(self):
+        pass
