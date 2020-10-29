@@ -1,7 +1,35 @@
+# imports for search_pascal_multiples_fast
+from collections import Counter
+
+# imports for search_pascal_multiples_readable
 import numpy as np
 from scipy.linalg import pascal
 
+
+# fastest function (the results vary, the maximum i could get was 972x times faster)
 def search_pascal_multiples_fast(row_limit):
+     # create pascal using another algoritm and list data type
+    ptriangle = [] # a container to collect each row
+    for _ in range(250): 
+        row = [1] # a starter 1 in the row
+        if ptriangle:
+            last_row = ptriangle[-1] # reference the previous row
+            row.extend([sum(pair) for pair in zip(last_row, last_row[1:])])
+            # append the final 1 to the outside
+            row.append(1)
+        ptriangle.append(row) # add row to ptriangle list
+
+    # create a generator objects of all numbers exlcluding outer two rows
+    number_list = (item for row in ptriangle for item in row[2:-2])
+
+    # initialize counter object on generator objects
+    counter = Counter(number_list)
+    
+    return sorted(list(set([element for element in counter.elements() if counter[element] > 3]))) # return sorted list of unique numbers in the counter, where the counter is greater > 3
+
+
+# most pleasant to read and understand (using numpy and scipy)
+def search_pascal_multiples_readable(row_limit):
     # create pascal array with library pascal from scipy.linalg subpackage
     pascal_array = np.array(pascal(row_limit))
 
