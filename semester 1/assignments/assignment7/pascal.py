@@ -10,7 +10,7 @@ from scipy.linalg import pascal
 def search_pascal_multiples_fast(row_limit):
      # create pascal using another algoritm and list data type
     ptriangle = [] # a container to collect each row
-    for _ in range(250): 
+    for _ in range(row_limit): 
         row = [1] # a starter 1 in the row
         if ptriangle:
             last_row = ptriangle[-1] # reference the previous row
