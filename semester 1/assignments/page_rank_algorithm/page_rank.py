@@ -40,6 +40,9 @@ def neighbours(G, node):
     return [edge[1] for edge in G.edges() if edge[0] == node]
 
 def summary_random_sufer(visited : dict):
+    """
+    Prints out a summary of the Random Surf performed. To run, give the return of the random_server (dictionary of visited nodes and their counts) as an input argument.
+    """
     total_visits = sum(visited.values())
 
     print('SUMMARY OF RANDOM WALK')
