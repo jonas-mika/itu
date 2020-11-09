@@ -12,11 +12,11 @@ import numpy as np
 # helper functions
 def read_adjlist(filename : str):
     """
-    Takes in .txt file containing the adjacencies and returns a directed nx.Graph object, that contains the unique nodes and directed linjs as edges.
+    Takes in .txt file containing the adjacencies and returns a directed nx.Graph object, that contains the unique nodes and directed links as edges.
     """
 
     with open(filename, 'rb') as infile: # create a filehandler to open the sample data
-        return nx.read_adjlist(infile, create_using=nx.DiGraph()) # read it into a nx directed graph object
+        return nx.read_adjlist(infile, create_using=nx.DiGraph(), nodetype=int) # read it into a nx directed graph object
 
 def show_graph(G):
     """
@@ -25,11 +25,30 @@ def show_graph(G):
     nx.draw(G, with_labels=True, node_color='green') #draw the network graph 
     plt.show() #to show the graph by plotting it
 
+def summary_graph(G):
+    """
+    Prints a summary of the properties of an graph objected provided as an input argument.
+    """
+    print('SUMMARY OF GRAPH')
+    print(f'Nodes: {G.nodes()}\nNumber of Nodes: {len(G)}\n')
+    print(f'Edges: {G.edges()}\nNumber of Edges/ Size: {G.size()}\n')
+
 def neighbours(G, node):
     """
     Takes a node as input and returns all possible nodes, that have a directed link          
     """
     return [edge[1] for edge in G.edges() if edge[0] == node]
+
+def summary_random_sufer(visited : dict):
+    total_visits = sum(visited.values())
+
+    print('SUMMARY OF RANDOM WALK')
+    print('---------------------------')
+    print(f'Performed {total_visits} Iterations of Random Walks.\n')
+    print('Ranked Nodes\t#Visits\t\tRelative Importance Score')
+    for key in visited:
+        print(f'{key}\t\t{visited[key]}\t\t{round(visited[key]/total_visits, 3)} ({round((visited[key]/total_visits)*100, 2)}%)')
+
 
 # setup function for page rank algorithm
 def branching(G):
@@ -63,41 +82,44 @@ def random_surfer(G, n, m):
     """
     Random Sufer Function, to simulate a random walk.
 
-    Parameters:
+    Input Arguments:
     - G: nx.Graph Object 
     - n: Number of Walks that should be performed
-    - m: dumping factor (= probability, to move to a random node)
+    - m: damping factor (= probability, to move to a random node)
     """
     visited = {}
     # random_node = random.choice([i for i in G.nodes()])
     
     current_node = random.choice([i for i in G.nodes()])
     for i in range(n):
-        print(f'Number of Walks: {i+1}')
-        print(f'Current Node: {current_node}')
+        #print(f'Number of Walks: {i}')
+        #print(f'Current Node: {current_node}')
         
+        # count the visits
         if current_node not in visited:
-            print('I havent seen this node so far')
+            #print('I havent seen this node so far')
             visited[current_node] = 1
         else:
             visited[current_node] += 1
 
-        # accountant for dangling nodes
+        # choose the next node
+        # account for dangling nodes
         if neighbours(G, current_node) == []:
-            print('This note doesnt have any neighbours, we have to randomly choose')
+            #print('This note doesnt have any neighbours, we have to randomly choose')
             current_node = random.choice([i for i in G.nodes()])
 
-        else:
-            if random.random() < m:
-                print('Damping Factor: Choose Random Node')
-                current_node = random.choice([i for i in G.nodes()])
+        # damping factor 
+        elif random.random() < m:
+            #print('Damping Factor: Choose Random Node')
+            current_node = random.choice([i for i in G.nodes()])
             
-            else: 
-                print('Walk to Neighbour')
-                print(f'It must be one of those: {neighbours(G, current_node)}')
-                current_node = random.choice(neighbours(G, current_node))
+        else: 
+            #print('Walk to Neighbour')
+            #print(f'It must be one of those: {neighbours(G, current_node)}')
+            current_node = random.choice(neighbours(G, current_node))
 
-    return sorted(visited.items(), key=lambda x: x[1], reverse=True)
+    # return dict(sorted(visited.items()))
+    return dict(sorted(visited.items(), key=lambda x: x[1], reverse=True))
 
 
 def page_rank(G, m, n):
@@ -130,19 +152,18 @@ def main():
     # read in the adj list using the read_adjlist() helper function
     G = read_adjlist('PageRankExampleData/tiny.txt')
 
-    print(f'Nodes: {G.nodes()}\nNumber of Nodes: {len(G)}\n')
-    print(f'Edges: {G.edges()}\nNumber of Edges/ Size: {G.size()}\n')
-
-    #random_walk = random_surfer(G, 10000, 0.15)
-    #print(random_walk)
-    #print(sum([i[1] for i in random_walk]))
-
-    page_rank(G, 100)
-    
+    # print small summary and graphical representation of network
     show_graph(G)
+    summary_graph(G)
+    
+    # perform random walk and print summary
+    surf_results = random_surfer(G, 10000, 0.15)
+    summary_random_sufer(surf_results)
 
-def testenv():
-    pass
+    # perform pagerank algorithm and print summary
+    # pagerank_results = page_rank(G, 100)
+    # summary_pagerank(pagerank_results)
+
 
 if __name__ == "__main__":
     main()
