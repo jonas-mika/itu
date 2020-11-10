@@ -186,7 +186,7 @@ def random_surfer(G, n, m):
 
     return dict(sorted(visited.items(), key=lambda x: x[1], reverse=True))
 
-def page_rank(G, n=100, m):
+def page_rank(G, m, n=100):
     """Function to perform the PageRank Algorithm.
 
         Parameters
@@ -213,7 +213,7 @@ def page_rank(G, n=100, m):
     # initialize mSx_k
     S = m * 1/size
 
-    for i in range(n):
+    for _ in range(n):
         D = (1-m)*sum(x[node]/size for node in dangling_nodes)
 
         for node, score in x.items():
@@ -232,7 +232,7 @@ def page_rank(G, n=100, m):
 # executed function
 def main():
     # choosing file 
-    current_file = FILENAMES[5]
+    current_file = FILENAMES[4]
     print(f'Performing Random Surfer and PageRank onto: {current_file}.txt\n')
 
     # load network into networkx object representation    
@@ -242,14 +242,14 @@ def main():
     
     # perform random walk and print summary
     st = default_timer()
-    surf_results = random_surfer(G, 10_000_000, 0.15)
+    surf_results = random_surfer(G, 100_000_000, 0.15)
     print(f'\nSurf File: {default_timer() - st}s')
     summary(surf_results, type='surfer')
     write_to_csv(surf_results, current_file, type='surfer')
 
     # perform pagerank algorithm and print summary    
     st = default_timer()
-    pagerank_results = page_rank(G, 1, 0.15)
+    pagerank_results = page_rank(G, 0.15)
     print(f'\nTime for PageRank Computation: {default_timer() - st}s')
     summary(pagerank_results, type='pagerank')
     write_to_csv(pagerank_results, current_file, type='pagerank')
