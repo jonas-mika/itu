@@ -11,33 +11,62 @@ FILENAMES = ['tiny', 'three', 'wikipedia', 'medium', 'p2p-Gnutella08-mod', 'bigR
 
 
 # helper functions
-def read_adjlist(filename : str):
-    """
-    Takes in .txt file containing the adjacencies and returns a directed nx.Graph object, that contains the unique nodes and directed links as edges.
-    """
+def load_file(filepath : str):
+    """Helper Function that loads the data from a .txt file representing the edges of a network into a nx.DiGraph Object
 
-    with open(filename, 'rb') as infile: # create a filehandler to open the sample data
+        Parameters
+        ------------
+        filename : str
+            The path of the file, that should be read in (either use an absolute path or define the graph relatively to the directory the script is called from)
+
+        Returns
+        ------------
+        nx.DiGraph object
+    """ 
+
+    with open(filepath, 'rb') as infile: # create a filehandler to open the sample data
         return nx.read_adjlist(infile, create_using=nx.DiGraph(), nodetype=int) # read it into a nx directed graph object
 
 def show_graph(G):
+    """Helper Function that roughly visualizes a Network from a nx.Graph() or subclass of nx.Graph() object
+
+        Parameters
+        -------------
+        G : nx.Graph()
+            nx.Graph() or similar subclasses objects
     """
-    Displays the nodes and edges of a nx.Graph object 
-    """
+
     nx.draw(G, with_labels=True, node_color='green') #draw the network graph 
     plt.show() #to show the graph by plotting it
 
 def summary_graph(G):
+    """Helper Functions, that prints a summary of the properties of an nx.Graph() object provided 
+
+        Parameters
+        -------------
+        G : nx.Graph()
+            nx.Graph() or similar subclasses objects
     """
-    Prints a summary of the properties of an graph objected provided as an input argument.
-    """
+
     print('SUMMARY OF GRAPH\n-----------------------')
     print(f'Number of Nodes: {len(G)}\nNumber of Edges/ Size: {G.size()}')
     print(f'Nodes: {G.nodes()}\nEdges: {G.edges()}')
 
-
 def summary(x : dict, type, n=10):
-    """
-    Prints out a nicely formatted output of the ten highest importance scores for both the random surfer and the pagerank algorithm.
+    """Helper Function to print out a nicely formatted summary of either the RandomSurfer or PageRank Algorithm.
+
+        Parameters
+        ------------
+        x        : dict
+            Dictionary of either the absolute numbers of visits (type='surfer') or the importance score (type='pagerank')
+        type     :  str
+            Type of dictionary that is the input argument (either: 'surfer' or 'pagerank', otherwise raises error)
+        n        :  int
+            Number of Nodes, that should be shown in the report (set to 10 by default, which means that it shows the ten highest ranked nodes)
+
+        Returns
+        ------------
+        None
     """
 
     if type == 'surfer':
@@ -60,9 +89,23 @@ def summary(x : dict, type, n=10):
 
     else: print('Please specify a valid type.')
 
-
-
 def write_to_csv(x : dict, filename, type):
+    """Helper Function to write output for both RandomSurfer and PageRank into a 'results' directory.
+
+        Parameters
+        ------------
+        x        : dict
+            Dictionary of either the absolute numbers of visits (type='surfer') or the importance score (type='pagerank')
+        filename : str
+            Name of File holding the information for the nx.Graph object (=Name of Network)
+        type     :  str
+            Type of dictionary that is the input argument (either: 'surfer' or 'pagerank', otherwise raises error)
+
+        Returns
+        ------------
+        None
+    """
+
     try: os.mkdir('results')
     except: None
     
@@ -83,11 +126,20 @@ def write_to_csv(x : dict, filename, type):
                 writer.writerow([key, x[key], x[key]*100])
 
     else: print('Please specify a valid type.')
-        
-
-
-    
+            
 def find_dangling_nodes(G):
+    """Helper Function to compute all dangling nodes within a network
+
+        Parameters
+        ------------
+        G : nx.DiGraph Object
+
+        Returns
+        ------------
+        x:  list
+            List containing all dangling nodes.
+    """
+
     nondangling_nodes = set()
     for edge in G.edges():
         nondangling_nodes.add(edge[0])
@@ -97,14 +149,23 @@ def find_dangling_nodes(G):
         
 # functions
 def random_surfer(G, n, m):
-    """
-    Random Sufer Function, to simulate a random walk.
+    """Function to perform the RandomSufer Algorithm.
 
-    Input Arguments:
-    - G: nx.Graph Object 
-    - n: Number of Walks that should be performed
-    - m: damping factor (= probability, to move to a random node)
+        Parameters
+        -----------
+        G : nx.DiGraph Object
+            A nx.DiGraph object holding nodes, edges and neighbors as attributes. See nx.DiGraph Doc for further information.
+        n : int
+            Number of Walks that should be performed (the bigger the network (G) is, the more iterations are needed to stablize the output)
+        m : float
+            Damping Factor (= Probability, to move to a random node)
+
+        Returns
+        -----------
+        visited :  dict
+            A dictionary, sorted descending by values for each key, holding the absolute number of visits for each node performed within the number n of iterations.
     """
+
     # initialize a dictionary with a key for each node and initializing the value (number of visits) to 0
     visited = {node: 0 for node in G.nodes()}
 
@@ -125,16 +186,24 @@ def random_surfer(G, n, m):
 
     return dict(sorted(visited.items(), key=lambda x: x[1], reverse=True))
 
+def page_rank(G, n=100, m):
+    """Function to perform the PageRank Algorithm.
 
-def page_rank(G, n, m):
-    """
-    PageRank Algorithm Function, that computes the importance vector for each node in a network.
+        Parameters
+        -----------
+        G : nx.DiGraph Object
+            A nx.DiGraph object holding nodes, edges and neighbors as attributes. See nx.DiGraph Doc for further information.
+        n : int (default: 100)
+            Number of Walks that should be performed (output should stablize for a default value of 100 iterations)
+        m : float
+            Damping Factor (= Probability, to move to a random node)
 
-    Input Arguments:
-    - G: nx.Graph Object 
-    - n: Number of Iterations performed
-    - m: damping factor (= probability, to move to a random node)
+        Returns
+        -----------
+        visited :  dict
+            A dictionary, sorted descending by values for each key, holding the impoortance score of visits for each node.
     """
+   
     # setup
     size = len(G) # number of nodes
     G_reverse = nx.reverse(G) # directed graph object with reversed edges (later used to compute the backlinks of each node)
@@ -160,7 +229,7 @@ def page_rank(G, n, m):
 
     return dict(sorted(x.items(), key=lambda x: x[1], reverse=True)) 
 
-
+# executed function
 def main():
     # choosing file 
     current_file = FILENAMES[5]
@@ -168,7 +237,7 @@ def main():
 
     # load network into networkx object representation    
     st = default_timer()
-    G = read_adjlist(f'PageRankExampleData/{current_file}.txt')
+    G = load_file(f'PageRankExampleData/{current_file}.txt')
     print(f'Loading File: {default_timer() - st}s')
     
     # perform random walk and print summary
@@ -184,10 +253,6 @@ def main():
     print(f'\nTime for PageRank Computation: {default_timer() - st}s')
     summary(pagerank_results, type='pagerank')
     write_to_csv(pagerank_results, current_file, type='pagerank')
-
-    # perform pagerank algorithm and print summary
-    # pagerank1 = nx.pagerank(G, alpha=0.15)
-    # print(pagerank1)
 
 if __name__ == "__main__":
     main()
