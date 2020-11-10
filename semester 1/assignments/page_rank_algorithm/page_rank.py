@@ -1,13 +1,14 @@
+# imports
 import networkx as nx
-import sys
 import random
-import matplotlib.pyplot as plt
-import numpy as np
+from timeit import default_timer
+from matplotlib import pyplot as plt
+import os
+import csv
 
-## from lecture notes
-# fh=open(sys.argv[1], "rb")
-# G=nx.read_adjlist(fh, create_using=nx.DiGraph())
-# fh.close()
+# global variable storing the filenames of the example datasets
+FILENAMES = ['tiny', 'three', 'wikipedia', 'medium', 'p2p-Gnutella08-mod', 'bigRandom']
+
 
 # helper functions
 def read_adjlist(filename : str):
@@ -29,49 +30,63 @@ def summary_graph(G):
     """
     Prints a summary of the properties of an graph objected provided as an input argument.
     """
-    print('SUMMARY OF GRAPH')
-    print(f'Nodes: {G.nodes()}\nNumber of Nodes: {len(G)}\n')
-    print(f'Edges: {G.edges()}\nNumber of Edges/ Size: {G.size()}\n')
+    print('SUMMARY OF GRAPH\n-----------------------')
+    print(f'Number of Nodes: {len(G)}\nNumber of Edges/ Size: {G.size()}')
+    print(f'Nodes: {G.nodes()}\nEdges: {G.edges()}')
 
-def neighbours(G, node):
+
+def summary(x : dict, type, n=10):
     """
-    Takes a node as input and returns all possible nodes, that have a directed link          
+    Prints out a nicely formatted output of the ten highest importance scores for both the random surfer and the pagerank algorithm.
     """
-    return [edge[1] for edge in G.edges() if edge[0] == node]
 
-def summary_random_sufer(visited : dict):
-    """
-    Prints out a summary of the Random Surf performed. To run, give the return of the random_server (dictionary of visited nodes and their counts) as an input argument.
-    """
-    total_visits = sum(visited.values())
+    if type == 'surfer':
+        total_visits = sum(x.values())
 
-    print('SUMMARY OF RANDOM WALK')
-    print('---------------------------')
-    print(f'Performed {total_visits} Iterations of Random Walks.\n')
-    print('Ranked Nodes\t#Visits\t\tRelative Importance Score')
-    for key in visited:
-        print(f'{key}\t\t{visited[key]}\t\t{round(visited[key]/total_visits, 3)} ({round((visited[key]/total_visits)*100, 2)}%)')
+        print(f'SUMMARY: Random Walk ({total_visits} iterations)')
+        print('---------------------------')
+        print('Ranked Nodes\t#Visits\t\tRelative Importance Score')
+        for i, key in enumerate(x):
+            if i == n: break
+            print(f'{key}\t\t{x[key]}\t\t{round(x[key]/total_visits, 5)} ({round((x[key]/total_visits)*100, 3)}%)')
+
+    elif type == 'pagerank':
+        print('SUMMARY: Pagerank')
+        print('---------------------------')
+        print('Ranked Nodes\tImportance Score')
+        for i, key in enumerate(x):
+            if i == n: break
+            print(f'{key}\t\t{x[key]} ({x[key]*100}%)')
+
+    else: print('Please specify a valid type.')
 
 
-# setup function for page rank algorithm
-def branching(G):
-    branching = dict()
 
-    for node in G.nodes():
-        branching[node] = 0
+def write_to_csv(x : dict, filename, type):
+    try: os.mkdir('results')
+    except: None
+    
+    if type == 'surfer':
+        total_visits = sum(x.values())
+
+        with open(f'results/surfer_results_{filename}.csv', 'w', encoding='utf-8') as outfile:
+            writer = csv.writer(outfile)
+            writer.writerow(['Node', 'Number of Visits', 'Relative Importance Score', '%'])
+            for key in x:
+                writer.writerow([key, x[key], x[key]/total_visits, (x[key]/total_visits)*100])
+
+    elif type == 'pagerank':
+        with open(f'results/pagerank_results_{filename}.csv', 'w', encoding='utf-8') as outfile:
+            writer = csv.writer(outfile)
+            writer.writerow(['Node', 'Importance Score', '%'])
+            for key in x:
+                writer.writerow([key, x[key], x[key]*100])
+
+    else: print('Please specify a valid type.')
         
-        for edge in G.edges():
-            if edge[0] == node:
-                branching[node] += 1 # increment the count of outgoing links
-    
-    return branching
-    
-def importance(G):
-    """
-    Initializes the starting vector x0, holding 1/n for each node
-    """
-    return {node: 1/G.size() for node in G.nodes()}
 
+
+    
 def find_dangling_nodes(G):
     nondangling_nodes = set()
     for edge in G.edges():
@@ -90,83 +105,89 @@ def random_surfer(G, n, m):
     - n: Number of Walks that should be performed
     - m: damping factor (= probability, to move to a random node)
     """
-    visited = {}
-    # random_node = random.choice([i for i in G.nodes()])
-    
-    current_node = random.choice([i for i in G.nodes()])
-    for i in range(n):
-        #print(f'Number of Walks: {i}')
-        #print(f'Current Node: {current_node}')
-        
-        # count the visits
-        if current_node not in visited:
-            #print('I havent seen this node so far')
-            visited[current_node] = 1
-        else:
-            visited[current_node] += 1
+    # initialize a dictionary with a key for each node and initializing the value (number of visits) to 0
+    visited = {node: 0 for node in G.nodes()}
 
-        # choose the next node
-        # account for dangling nodes
-        if neighbours(G, current_node) == []:
-            #print('This note doesnt have any neighbours, we have to randomly choose')
-            current_node = random.choice([i for i in G.nodes()])
+    # choose start node randomly
+    nc = len(G)-1 # maximum index
+    node = random.randint(0, nc)
 
-        # damping factor 
-        elif random.random() < m:
-            #print('Damping Factor: Choose Random Node')
-            current_node = random.choice([i for i in G.nodes()])
+
+    for _ in range(n):
+        # increment the visit counter for current node
+        visited[node] += 1
+
+        # walk to next next node according to random surfer algorithm
+        if [neighbor for neighbor in G.neighbors(node)] == [] or random.random() < m:
+            node = random.randint(0, nc)
             
-        else: 
-            #print('Walk to Neighbour')
-            #print(f'It must be one of those: {neighbours(G, current_node)}')
-            current_node = random.choice(neighbours(G, current_node))
+        else: node = random.choice([neighbor for neighbor in G.neighbors(node)])
 
-    # return dict(sorted(visited.items()))
     return dict(sorted(visited.items(), key=lambda x: x[1], reverse=True))
 
 
-def page_rank(G, m, n):
-    # setup
-    size = G.size()
-    G_reverse = nx.reverse(G)
-    branches = branching(G)
-    dangling_nodes = find_dangling_nodes(G)
+def page_rank(G, n, m):
+    """
+    PageRank Algorithm Function, that computes the importance vector for each node in a network.
 
-    pagerank_vector = importance(G)
+    Input Arguments:
+    - G: nx.Graph Object 
+    - n: Number of Iterations performed
+    - m: damping factor (= probability, to move to a random node)
+    """
+    # setup
+    size = len(G) # number of nodes
+    G_reverse = nx.reverse(G) # directed graph object with reversed edges (later used to compute the backlinks of each node)
+    dangling_nodes = find_dangling_nodes(G) # list of dangling nodes
+    x = {node: 1/size for node in G.nodes()} # x_0 (starting vector with equal importance for each node)
+
+    # initialize mSx_k
+    S = m * 1/size
 
     for i in range(n):
-        for node, rank in pagerank_vector.items():
-            S = m * 1/size * rank # initialize next vector with mSkx
-            if node in dangling_nodes:
-                D = (1-m) * 1/size * node # add dangling nodes
-                rank = D + S
-            else: 
-                pass # needs to add the computation if node is not dangling
-                #rank += (1-m) * 
-                A = (1-m) 
-                rank = D + A
+        D = (1-m)*sum(x[node]/size for node in dangling_nodes)
+
+        for node, score in x.items():
+            backlinks = [i for i in G_reverse.neighbors(node)] 
+            scores = [1/len([i for i in G.neighbors(backlink)]) for backlink in backlinks]
             
+            A = 0
+            for i, backlink in enumerate(backlinks):
+                A += scores[i] * x[backlink]
+            A = (1-m) * A
+          
+            x[node] = A + D + S
+
+    return dict(sorted(x.items(), key=lambda x: x[1], reverse=True)) 
 
 
-    return pagerank_vector
-
-# testing environment and main function
 def main():
-    # read in the adj list using the read_adjlist() helper function
-    G = read_adjlist('PageRankExampleData/tiny.txt')
+    # choosing file 
+    current_file = FILENAMES[5]
+    print(f'Performing Random Surfer and PageRank onto: {current_file}.txt\n')
 
-    # print small summary and graphical representation of network
-    show_graph(G)
-    summary_graph(G)
+    # load network into networkx object representation    
+    st = default_timer()
+    G = read_adjlist(f'PageRankExampleData/{current_file}.txt')
+    print(f'Loading File: {default_timer() - st}s')
     
     # perform random walk and print summary
-    surf_results = random_surfer(G, 10000, 0.15)
-    summary_random_sufer(surf_results)
+    st = default_timer()
+    surf_results = random_surfer(G, 10_000_000, 0.15)
+    print(f'\nSurf File: {default_timer() - st}s')
+    summary(surf_results, type='surfer')
+    write_to_csv(surf_results, current_file, type='surfer')
+
+    # perform pagerank algorithm and print summary    
+    st = default_timer()
+    pagerank_results = page_rank(G, 1, 0.15)
+    print(f'\nTime for PageRank Computation: {default_timer() - st}s')
+    summary(pagerank_results, type='pagerank')
+    write_to_csv(pagerank_results, current_file, type='pagerank')
 
     # perform pagerank algorithm and print summary
-    # pagerank_results = page_rank(G, 100)
-    # summary_pagerank(pagerank_results)
-
+    # pagerank1 = nx.pagerank(G, alpha=0.15)
+    # print(pagerank1)
 
 if __name__ == "__main__":
     main()
