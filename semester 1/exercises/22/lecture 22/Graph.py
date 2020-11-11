@@ -195,5 +195,3 @@ def neighbour_degree_function(self):
     knn.sort(key=lambda x:x[0])
     
     return np.array(knn)
-
-
