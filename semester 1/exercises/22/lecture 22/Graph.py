@@ -4,7 +4,6 @@ from pprint import pprint
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 class Graph:
     def __init__(self, directed=False):
         self._nodes = {}

@@ -37,4 +37,3 @@ def rev(A):
 # 	if  < L[0]:
 # 		curr_max = L[0]
 # 	return my_findMax(L[1:])
-
