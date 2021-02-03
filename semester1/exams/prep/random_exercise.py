@@ -84,4 +84,30 @@ with open("test.csv", "r") as f:
     reader = csv.reader(f, delimiter=',')
     data = [line for line in reader][1:]
 
-print(data)
+#print(data)
+
+def sum_of_list(L):
+    if len(L) == 1:
+        return L[0]
+    return L[0] + sum_of_list(L[1:])
+
+# print(sum_of_list([1,3,7]))
+
+def fact(n):
+    if n == 1:
+        return 1
+    return n * fact(n-1)
+
+#print(fact(6))
+
+infile = open("test.txt","r")
+
+#lines = [line.strip() for line in infile.readlines()]
+#print(lines)
+
+# lines = []
+# for line in infile:
+#     lines.append(line.strip())
+
+lines = [line.strip() for line in infile]
+print(lines)
