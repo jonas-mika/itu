@@ -3,7 +3,7 @@ import sys
 
 # read input 
 lines = sys.stdin.readlines()
-n, m = [int(i) for i in lines[0].split()]
+n, _ = [int(i) for i in lines[0].split()]
 operations = [[int(i) for i in operation.split()] for operation in lines[1:]]
 
 # print(n,m)
@@ -38,15 +38,15 @@ def main():
         elif o == 2: # move
             # find children and parent
             children = [index for index,elm in enumerate(UF._parent) if elm==s]
-            parent = UF.find(s)
+            root = UF.find(s)
 
-            if s == parent: # moving node is root node
+            if s == UF._parent[s]: # moving node is root node
                 children.remove(s)
                 for child in children:
                     UF._parent[child] = children[0]
             else: # moving node is not a root node
                 for child in children:
-                    UF._parent[child] = parent
+                    UF._parent[child] = root
 
             # move s into t
             UF._parent[s] = UF.find(t)
