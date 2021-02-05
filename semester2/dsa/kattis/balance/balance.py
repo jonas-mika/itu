@@ -13,7 +13,7 @@ def check_syntax(s: str):
         ")": [1,1],
         "]": [1,2],
         "}": [1,3]
-    }
+     }
 
     for cha in s.strip():
         if map_[cha][0] == 0:
