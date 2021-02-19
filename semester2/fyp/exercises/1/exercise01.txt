@@ -1,0 +1,38 @@
+==== EXERCISE 01, FIRST YEAR PROJECT 2021, PROJECT 1
+
+Doing this exercise is doing work for your submission. You do not have to finish all the points listed below within the exercise time of 2 hours! Use the exercise time to start (with help from TAs), and then finish everything within 2 days together with your group. The next exercise will build on that.
+
+
+GITHUB SETUP
+- Complete the Github Tutorial on Learnit
+
+- Set up a new github project with your group for project 1, you can use github.itu.dk. Call it "fyp2021p01gXX" where XX stands for your group number (01,02,..)
+- Set up a minimal github project folder structure. You MUST have: 
+-- README.md
+-- folder data with subfolders raw, interim, processed, external
+-- folder notebooks
+-- folder references
+-- folder reports with subfolder figures
+-- folder scripts
+
+- Put the raw data into data/raw. Put all metadata into references.
+
+- Also clone the github repo https://github.com/mszell/fyp2021p01lectures, so you have a copy of it.
+
+- While creating your code for the following exploratory data analysis, make several commits and pushes to get a feel for git. Take care to coordinate with your group members, so you don't get into edit conflicts.
+
+
+EXPLORATORY DATA ANALYSIS
+- Create a Jupyter notebook in the folder notebooks. In this notebook, make an initial exploratory data analysis, where you:
+-- load the data
+-- report the dimensions of the data (number of tables, rows, fields)
+-- identify for each variable whether it is numerical or categorical
+-- Make the following sanity check: Does every AccidentID in the casualties and vehicles tables have their corresponding AccidentID in the accident table?
+-- report a five number summary for all numerical variables (where this makes sense)
+-- report a box plot for all numerical variables (where this makes sense)
+-- report a frequency histogram for all numerical variables, and a frequency bar plot for all categorical variables (where this makes sense)
+
+
+SYSTEM SETUP
+- install shapely and folium
+- We will use also the following packages. They are all part of anaconda, but if you are not using anaconda, make sure to install them: csv, pandas, seaborn, json, scipy

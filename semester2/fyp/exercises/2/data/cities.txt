@@ -1,0 +1,6 @@
+Those are the directories in our data folder sorted by size
+1 	./hillerod
+2 	./aarhus
+3 	./copenhagen
+4 	./newyork
+5 	.

@@ -1,0 +1,32 @@
+==== EXERCISE 02, FIRST YEAR PROJECT 2021, PROJECT 1
+
+Doing this exercise is doing work for your submission. You do not have to finish all the points listed below within the exercise time of 2 hours! Use the exercise time to start (with help from TAs), and then finish everything within 2 days together with your group. The next exercise will build on that.
+
+
+COMMAND LINE TOOLS
+You find links to descriptions of all UNIX commands here: https://en.wikipedia.org/wiki/List_of_Unix_commands
+
+Problem 1)
+Write a pipeline that turns a csv file into a tsv file (replace all commas by tabs)
+
+cat in.csv | tr "," "\t" > out.csv
+
+Problem 2)
+Imagine you have four folders in your current directory called: aarhus, newyork, hillerod, copenhagen
+These folders contain data about these cities - the bigger the city the more data.
+Running the following pipeline, what will the file "cities.txt" contain *exactly*?
+du | sort -h | awk '{print $2}' | nl -w 2 -n ln > 'cities.txt'
+
+We first sort the directories by their memory size 
+
+
+
+
+MISSING DATA
+- Go back to your analysis from Exercise 01, and check/fix/report how you are dealing with missing data, for example by using a MaskedArray which you learned earlier today.
+
+
+FORMULATE AN OPEN RESEARCH QUESTION FOR TASK 4 FROM THE PROJECT DESCRIPTION, FILTER DATA
+- In your group, brainstorm a possible research question. In particular, make decisions on which fields you will keep, how you deal with missing data, etc.
+- You will need to restrict the data set to your city. Try to find out how. Hint: You will need to find an external data set somewhere to do that, making use of the field LSOA_of_Accident_Location
+- After that, create a new data set in the folder /data/interim, where you keep only the fields and rows that will be relevant for your research question. Keep the raw data unchanged at all times!
