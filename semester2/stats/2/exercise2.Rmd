@@ -1,0 +1,158 @@
+---
+ title: 'Exercises 2'
+ subtitle: 'Introduction to R for Statistics' 
+ author: 'Jonas-Mika Senghaas'
+ date: '10/02/2021'
+ output: pdf_document
+---
+ 
+## Exercise 1
+The first exercise requires us to import the 'starwars' dataset from the 'dplyr' package. It contains 87 characters (rows) that are described by 13 features (columns). However, there are some missing values. Let's first load the dataset and inspect it.
+ 
+```{r, results='hide'}
+# load the package dpylr, the starwars package is now globally loaded
+require(dplyr)
+
+# we can get an overview by running head() and summary() on the dataset
+# head(starwars)
+# summary(starwars)
+```
+
+### 1a. What is the Homeworld of 'Mace Windu'?
+To find the homeworld of Mace Windu, we first need to select the row containing Mace Windu. We do this by subsetting. Once we have the row, we can select the column holding the information of his homeworld using the $ operator.
+```{r}
+mace_windu <- subset(starwars, name=='Mace Windu')
+mace_windu$homeworld
+
+```
+
+### 1b. How many droids are in the dataset?
+The number of droids in the dataset is the length of the subset, fitered for all droids.
+```{r}
+droids <- subset(starwars, species=='Droid')
+print(nrow(droids))
+```
+
+### 1c. Who are the shortest and tallest humans in the dataset?
+We, again fiter for all humans and find the min and max heights. Then we map those to the corresponding names.
+```{r}
+humans_heights <- subset(starwars, species=='Human')$height
+max_height <- max(humans_heights, na.rm = TRUE)
+min_height <- min(humans_heights, na.rm = TRUE)
+
+subset(starwars, height==max_height)$name
+subset(starwars, height==min_height)$name
+```
+
+### 1d. What is the mean and standard deviation of the height of all humans?
+```{r}
+print(paste('Mean Height of Humans', mean(humans_heights, na.rm=TRUE)))
+print(paste('Standard Deviation of Heights of Humans', sd(humans_heights, na.rm=TRUE)))
+```
+
+## Exercise 2
+
+### 2.1 Create the Dataframe
+Now, we should create our own dataframe. We therefore first create vectors corresponding to the columns.
+
+```{r}
+name <- c('Astrid', 'Lea', 'Sarina', 'Remon', 'Letizia', 'Babice', 'Jonas', 'Wendy', 'Niveditha', 'Gioia')
+sex <- c('F', 'F', 'F','M', 'F', 'F', 'M', 'F', 'F', 'F')
+age <- c(30, 25, 25, 29, 22, 22, 35, 19, 32, 21)
+superhero <- c('Batman', 'Superman', 'Batman', 'Spiderman', 'Batman', 'Antman', 'Batman', 'Superman', 'Maggott', 'Superman')
+tattoos <- c(11, 15, 12, 5, 65, 3, 9, 13, 900, 0)
+
+data = data.frame(name, sex, age, superhero, tattoos)
+data
+```
+
+
+### 2.2 What was the mean age of female and male pirates separately?
+```{r}
+males <- subset(data, sex=='M')
+females <- subset(data, sex=='F')
+
+mean(males$age, na.rm=TRUE)
+mean(females$age, na.rm=TRUE)
+```
+
+### 2.3 
+Adding a new column
+```{r}
+tattoos.per.year <- data$tattoos / data$age
+data['tattoos.per.year'] <- tattoos.per.year
+data
+```
+
+```{r}
+max.tattoo.per.year <- max(data$tattoos.per.year)
+subset(data, tattoos.per.year==max.tattoo.per.year)$name
+```
+
+
+### Exercise 2d - What was the median number of tattoos of pirates over the age of 20 whose favorite superhero is Spiderman?
+We first filter for all pirate over age 20, whose favorite superhero is Spiderman
+```{r}
+over.20.and.spiderman <- subset(data, superhero=='Spiderman' & age>20)
+mean(over.20.and.spiderman$tattoos)
+```
+
+### Exercise 2e - Make a boxplot of the age distribution of the pirates
+```{r}
+ages <- data$age
+boxplot(ages,
+        main='Boxplot of Ages of Pirates')
+```
+
+### Exercise 2f. Make a piechart showing the number of pirates which has each superhero as their favorite.
+
+```{r}
+table(data$superhero)
+```
+
+
+```{r}
+pie(table(data$superhero),
+    main='Distribution of Favorite Superheros')
+```
+
+
+## Exercise 3
+
+### 3a. Normal Distributions
+```{r}
+sample <- c(rnorm(5, mean=2, sd=1/5))
+
+print(mean(sample))
+print(sd(sample))
+```
+
+### 3b. Histogram of Sample
+```{r}
+hist(sample)
+```
+
+### 3c. What happens to the mean and standard deviation when you increase the number of samples to 100, how about 10000?
+
+```{r}
+plot.normal.distribution <- function(sample.size, with_pdf=TRUE) {
+        sample <- rnorm(sample.size, mean=2, sd=1/5)
+        hist(sample, freq=FALSE)
+        
+        if (with_pdf == TRUE) {
+                # curve(dnorm(x,0,1), add=TRUE, col='red')
+                xs <- seq(min(sample), max(sample), length.out=100)
+                probs <- dnorm(xs, mean=2, sd=1/5)
+                lines(xs, probs,col='red')
+        } 
+}
+```
+
+```{r}
+for (i in c(5, 100, 10000)) {
+ plot.normal.distribution(i)       
+}
+```
+
+ 
+ 

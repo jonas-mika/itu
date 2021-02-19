@@ -1,0 +1,76 @@
+---
+title: "Applied Statistics -- Exercise 3"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Goal 
+
+To get confident with conditional probability and discrete random variables.
+To make first visualizations of discrete distributions in R. 
+
+# Problems
+
+T=Theoretical Exercise, R=R Exercise
+
+## 1. (T)
+
+We are at a train station, waiting for a train. Suppose that the probability of snow is $0.1$.
+If it is snowing, then the probability that the train is delayed is $0.6$, otherwise, it is $0.2$.
+Given that the train is delayed, what is the probability that it is snowing?
+Define appropriate events, and compute the conditional probability.
+
+## 2. (T)
+
+Consider the following game.
+A coin is tossed repeatedly until we get heads. 
+For a single toss the probability of heads is $p$, and tosses are independent.
+You are to guess if the number of tosses needed to get the first head is even or odd: if your guess is right, you win.
+Should you pick "even" or "odd" as your guess?
+ 
+_Hint_: You can use of the following in your solution. If $0 \le a < 1$, then 
+\[
+\sum_{k\ge 0} a^k = \frac{1}{1-a}
+\]
+ 
+## 3. (T)
+
+A fair die is thrown until the sum of the results of the throws exceeds 6. Let the random variable $X$ be the number of throws needed for this. Find the probability mass function of $X$.
+
+## 4. (R)
+
+Consider you have two fair coins that you toss simultaneously (fair coins have a 0.5 probability of heads). You repeat the trial 15 times. Let $X$ be the random variable indicating the number of cases, where both coins come with heads up.
+In the following exercises you can use the `dbinom` and `pbinom` functions.
+
+a) What is the probability $P(X=5)$? 
+
+b) What is the probability $P(X\leq 5)$?
+
+
+## 5. (R)
+
+Imagine a football betting setting where there are 13 football games. Each game can
+have three possible outcomes: home team wins (1), the teams play even (E) or the
+visitor team wins (2). Model the outcome of each game as a random process where
+each of the three outcomes are equally probable and independent from other
+games. Let the random variable $X$ characterise the number of correct guesses
+for the 13 outcomes in one betting.
+
+a) Write down the analytic forms for the probability mass function of $X$.
+
+b) Illustrate the probability mass function by plotting it in a figure.
+
+c) What is the probability that one gets all the 13 outcomes right?
+
+
+## 6. (R)
+
+You are a collector of soccer players cards. There is just one card missing from your collection. Every day you buy one, and with the probability 1/100 it is the one you are missing. Each purchase is independent from the others.
+Model the number of days it takes to find the missing card by the random variable $X \sim Geo(1/100)$.
+
+a) Plot the distribution function of $X$.
+
+b) How many cards do you have to buy so that the chance of finding the missing card is at least $0.5$? How about at least $0.95$? (play with different ranges for $k$).
+
+c) Assume you have tried for 20 days, but you have not won yet. For how many days do you need to try further so that you have at least a $0.5$ chance of winning?

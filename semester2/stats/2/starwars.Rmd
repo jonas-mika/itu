@@ -1,0 +1,18 @@
+# Small Exercise on Starwars-Dataset
+
+```{r}
+require(dplyr) # this is the package that has stored the starwars dataset
+```
+
+```{r}
+subset(starwars, name=="Han Solo")$homeworld
+```
+
+```{r}
+wookiees <- subset(starwars, species=='Wookiee')
+
+mean(wookiees$mass)
+sd(wookiees$mass)
+```
+
+

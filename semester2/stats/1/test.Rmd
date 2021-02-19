@@ -1,0 +1,159 @@
+---
+title: 'My First R-Markdown'
+author: 'Jonas-Mika Senghaas'
+date: '10/02/2021'
+# output: pdf_document
+---
+
+## Code cell
+This is an example of a simple code cell. 
+```{r}
+2+2
+```
+R allows you to make more complicated expressions. You can also mute the input of the cell by adding the flag 'echo = FALSE' into the constructor of the code cell.
+```{r}
+sqrt(16) # this is the square root of 16
+```
+
+## Functions
+```{r}
+my.adder <- function(x, add.this = 1) {
+  result <- x + add.this
+  return(result)
+}
+
+my.adder(5,10)
+```
+
+## Flow Control 
+
+### If-Elif-Else
+
+```{r}
+is_positive <- function(x) {
+  if(x >= 0) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+is_positive(2)
+
+```
+
+
+### For-Loop
+```{r}
+vector <- c(1:10)
+vector
+
+for (i in vector) {
+  print(i)
+}
+```
+
+
+# Statistics in R
+We will explore R's capabilities of statistics by exploring the famous iris dataset that is.
+
+```{r}
+iris_data <- data(iris)
+head(iris)
+```
+
+### Summarise Data
+```{r}
+summary(iris)
+```
+
+### Get the mean
+```{r}
+calculate.mean <- function(x) {
+  return(sum(x)/length(x))
+}
+# this however is already implemented in R in the following way
+mean(iris$Sepal.Length)
+calculate.mean(iris$Sepal.Length)
+```
+
+### Sample Variance and Standard Deviation
+```{r}
+calculate.variance <- function(x) {
+  return(1/(length(x)-1) * sum((x-mean(x))^2)) # this is the formula for the variance
+}
+calculate.variance(iris$Sepal.Length) # variance
+var(iris$Sepal.Length)
+
+sd(iris$Sepal.Length) # standard deviatin
+
+```
+
+### Dealing with Missing Values
+```{r}
+#mean(iris$Sepal.Length, na_rm = TRUE)
+max(iris$Sepal.Length, na_rm = TRUE)
+#min(iris$Sepal.Length, na_rm = TRUE)
+#median(iris$Sepal.Length, na_rm = TRUE)
+#var(iris$Sepal.Length, na_rm = TRUE)
+#sd(iris$Sepal.Length, na_rm = TRUE)
+```
+
+## Simulation
+
+```{r}
+#set_seed(42)
+
+#this is an example of a coin tossing simulation
+sample(
+  x= c("H", "T"),
+  prob = c(.5, .5),
+  size = 10,
+  replace = TRUE
+)
+```
+
+## Probability Distributions
+```{r}
+rnorm(5) # get 5 samples from the gaussian elimination
+```
+
+## Plotting
+```{r}
+plot(iris$Petal.Length, iris$Petal.Width, col = iris$Species, main="Iris Data")
+
+# legend("topleft", legend=level(iris$Species), )
+```
+
+```{r}
+a.vec <- subset(iris, Species == "setosa")$Sepal.Length
+
+hist(a.vec, 
+     col = 'skyblue',
+     breaks=50)
+```
+
+```{r}
+samples <- rnorm(1000)
+hist(samples, freq=FALSE, ylim = c(0, 0.45), main = "Histogram of Gaussian Random Numbers (1000 Samples)")
+
+xs <- seq(-5, 5, by= 0.01)
+probs = rnrom(xs)
+lines(xs, probs, col='red')
+```
+Saving Figures
+```{r}
+require(dplyr)
+png(file = 'pie.png')
+
+data <- subset(starwars, species %in% c('Human', 'Droid', 'Wookiee'))
+
+pie(table(data$Species), main = 'Pie Chart')
+
+dev.off()
+```
+
+
+
+## Tex-Code
+$\Sigma_{i=0}^{N}i^2$ 
