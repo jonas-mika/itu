@@ -1,0 +1,278 @@
+---
+title: "Exercise 5"
+subtitle: "Applied Statistics, IT University of Copenhagen"
+documentclass: article
+output: pdf_document
+classoption: a4paper
+references:
+- id: Verzani2014
+  type: book
+  title: "Using R for Introductory Statistics"
+  author:
+  - family: Verzani
+    given: John
+  issued:
+    year: 2014
+  publisher: CRC Press
+---
+
+T=Theoretical exercise, R=R exercise
+
+# Preparation
+
+* Read pages 33--44, 50--55, and 60--61 from @Verzani2014.
+
+# Problems
+
+## 1. Octrahedral Die (T)
+
+Let $T$ be the outcome of roll of fair octahedral die. 
+
+(a) Describle the probability distribution of $T$, that is, list the outcomes and the corresponding probabilities.  
+
+**Answer**\\
+The task describes the probabilistic experiment of the roll of a fari octahedral die that is modeled with the 
+\textit{continuous random variable} $T$ describing the outcome of a single roll of this die. We can define the sample space and the probability mass function $p$ associating probabilities to all possible single events in the sample space as follows:
+$$ 
+\Omega = {1,2,3,4,5,6,7,8}
+$$
+$$
+p(x) = \begin{cases} 
+\frac{1}{8} \text{ for all x }\in \Omega \\
+0 \text{  else}
+\end{cases}
+$$
+```{r}
+x <- 1:8
+y <- c(rep(1/8, 8))
+plot(x, y, main='Probability Mass of T (Outcome of Octahedral Die)', type='h', xlab='Outcomes', ylab='Probability')
+```
+
+
+$$
+F(x) = \begin{cases}
+\frac{x}{8} \text{ for x on the interval of } \Omega \\
+0 \text{  else }
+\end{cases}
+$$
+```{r}
+x <- 1:8
+y <- c()
+for (i in x) {
+  append(y, i/8)
+}
+plot(x, y, main='Cumulative Probability Distribution of T (Outcome of Octahedral Die)', xlab='Outcomes', ylab='Cumulative Probability')
+```
+
+
+(b) Determine the expected value and variance of $T$.
+
+**Answer**
+
+Expected Value/ Mean:
+
+$$
+E[T] = \sum_{i=1}^{8}i\frac{1}{8} = \frac{i}{8} =\frac{9}{2}=4.5
+$$
+
+Variance: 
+
+Variance is a measure of how spread out the values in a distribution are. In our example, a low variance means the sums that we roll will usually be very close to one another. By contrast, the variance is large when the sums that we roll are frequently distant values. The way that we calculate variance is by taking the difference between every possible sum and the mean. Then we square all of these differences and take their weighted average.
+
+$$
+Var[T] = E[(T-E)^2] = E[T^2] - E[T] = \sum_{i=1}^{8} i^2\cdot \frac{1}{8} - E[T] = (\frac{1}{8} + \frac{4}{8} + \frac{9}{8} + \frac{16}{8} + \frac{25}{8} + \frac{36}{8} + \frac{49}{8} + \frac{64}{8}) - 4.5 = 25.5 - 4.5 = 21
+$$
+$$
+Var[T] = E[(T-E)^2] = \sum_{i=1}^8  \frac{(i-4.5)^2}{8} = 2(\frac{49}{32} + \frac{25}{32} + \frac{9}{32} + 
+\frac{1}{32}) = 5.25
+$$
+
+
+## 2. Expectation and Variance of a Continuous Random Variable (T)
+
+Let $X$ be a continuous random variable with the density function
+
+\begin{equation}
+  f_X(x) = \left\{ \begin{tabular}{ll}
+                  $x + 1$ & if $- 1 \leq x < 0$ \\
+                  $-x + 1$ & if $0 \leq x < 1$ \\
+                  0 & otherwise.
+               \end{tabular}
+  \right.
+\end{equation}
+Compute the expectation and variance of $X$. 
+
+**Answer**
+
+Expected Value/ Mean:
+
+From the probability density function given for $X$, we can easily derive that 
+the expected value is 0, since the PDF is symmetric around the y-axis, such that
+$f_X(x)=f_X=(-x)$.
+$$
+E[X] = 0 
+$$
+
+Variance:
+
+
+
+
+
+## 3. Linearity of the Expectation Operator (T)
+
+Show that the expectation operator is linear;
+that is, for functions $f,g: \mathbb{R} \rightarrow\mathbb{R}$, applied on the random variable $X$, and any scalars $\alpha,\beta \in \mathbb{R}$, 
+\begin{equation}
+  \mathrm{E} \left[ \alpha f(X) + \beta g(X) \right] = \alpha\, \mathrm{E} \left[  f(X) \right] + \beta\, \mathrm{E} \left[ g(X) \right].
+\end{equation} 
+
+Consider the cases where
+
+(a) $X$ is a discrete random variable taking values $a_1,a_2,\ldots \in \mathbb{R}$,
+
+$$
+\mathrm{E} \left[ \alpha f(X) + \beta g(X) \right]\\
+= \sum_{a_i}(\alpha f(a_i) + \beta g(a_i) p(a_i))\\
+= \sum_{a_i}\alpha f(a_i)p(a_i) + \sum_{a_i}\beta g(a_i)p(a_i)\\
+= \alpha \sum_{a_i}f(a_i)p(a_i) + \beta \sum_{a_i} g(a_i)p(a_i)\\
+= \alpha \mathrm{E}[f(x)] + \beta \mathrm{E}[g(x)]
+$$
+
+(b) $X$ is a continuous random variable taking values on the real axis.
+
+$$
+\mathrm{E} \left[ \alpha f(X) + \beta g(X) \right]\\
+= \int_{-\infty}^{\infty}(\alpha f(x) + \beta g(x)) f_X(x))dx\\
+= \int_{-\infty}^{\infty} \alpha f(x)f_X(x)dx + \int_{-\infty}^{\infty}\beta g(x)f_X(x) dx\\
+= \alpha \int_{-\infty}^{\infty}f(x)f_X(x)dx + \beta \int_{-\infty}^{\infty} g(x)f_X(x) dx\\
+= \alpha \mathrm{E}[f(x)] + \beta \mathrm{E}[g(x)]
+$$
+
+## 4. Transforming a Random Variable (T)
+
+Given is a random variable $X$ with the probability density function $f$ given by $f(x)=0$ for $x<0$, and for $x>1$, and $f(x)=4x-4x^3$ for $0 \leq x \leq 1$. 
+
+(a) Determine the distribution function $F_X$.
+
+The distribution function $F_X$ is the antideriative of the probability density 
+function $f$ onb tge interval $0 \le x \le 1$.
+
+$$
+F_X(x)= 
+\begin{cases}
+0 \text{ if x < 0} \\
+2x^2 - x^4 \text{ if } 0 \le x \le 1 \\
+1 \text{ else}
+\end{cases}
+$$
+(b) Let $Y=\sqrt{X}$. Determine the distribution function $F_Y$.
+We perform a change of variable as follows
+
+$$
+F_Y(a) = P(Y \le a) = P(\sqrt{X} \le a) = P(X \le a^2) = F_X(a^2)
+$$
+
+(c) Determine the probability density of Y. 
+The probability density function of $Y$ is the derivative of the distribution 
+function. Therefore:
+
+$$
+f_Y(x) = \frac{dF_Y}{dx}F_Y(x) = \frac{dF_Y}{dx}F_X(x^2) = \frac{dF_Y}{dx}4x^2 - 4x^6 = 8x-24x^5
+$$
+
+
+## 5. Accessing Data and Numeric Summaries (R)
+
+(a) Take ```Cars93``` (MASS) data set. What is the type of the Cylinders variable? What does the summary command do for the Cylinders variable? Get the names of the cars having 8 cylinders. What is the mean horsepower of the cars having 8 cylinders, how about standard deviation? How about those for the cars having 6 cylinders? Is the result what you expect?
+
+```{r}
+library('MASS')
+data(Cars93)
+names(Cars93)
+head(Cars93)
+```
+```{r}
+# type of cylinder variable
+typeof(Cars93$Cylinders)
+```
+
+```{r}
+# summary on cylinders
+summary(Cars93$Cylinders)
+```
+
+```{r}
+# cars with 8 cylinders
+eight.cylinders <- subset(Cars93, Cylinders==8)
+paste(eight.cylinders$Manufacturer, eight.cylinders$Model, eight.cylinders$Type)
+```
+
+```{r}
+# mean and standard deviation horsepower of cars with 8 cylinders
+print(paste(mean(eight.cylinders$Horsepower), sd(eight.cylinders$Horsepower)))
+```
+
+```{r}
+# mean and standard deviation of horsepower for cars with 6 cylinders
+six.cylinders <-subset(Cars93, Cylinders==6)
+print(paste(mean(six.cylinders$Horsepower), sd(six.cylinders$Horsepower)))
+```
+
+(b) For the ```precip``` data set, find the mean and standard deviation of the rain fall over cities. Find all the cities with the average annual rain fall exceeding 50 inches. Which cities are the dryest? Does this match your expectation?
+
+```{r}
+data(precip)
+precip[]
+```
+
+```{r}
+# mean and standard deviation
+mean(precip)
+sd(precip)
+```
+
+```{r}
+# cities exceeding 50 inches average annual rain fall
+over.50 <- precip[precip > 50]
+over.50
+```
+
+```{r}
+# driest cities
+sorted.cities <- names(sort(precip))
+sorted.cities[c(1:5)] # the five driest cities
+```
+
+
+
+(c) The ```rivers``` contains the lengths of the 141 major rivers in North America. Compare the mean and 25% trimmed mean on the data set. What does the result tell you? How big is the standard deviation?
+
+```{r}
+data(rivers)
+```
+
+```{r}
+mean(rivers)
+sd(rivers)
+```
+
+
+
+
+## 6. Flight Overbooking (R)
+
+To maximize the seats occupied during flights, the airlines has the customs to overbook them. Assume that the total number of seats on a flight is 150 and the number of people showing up at the airport is a random variable $X \in {1,2,\ldots,M}$, where all the outcomes are equally probable, and $M$ is the number of bookings made. Assume that each passenger onboard means $500$ EUR cash inflow for the airline whereas each refused passenger implies $1000$ EUR penalty to the airline. Operating the plane costs $40000$ EUR. For how many bookings would you advice the airline to take?
+
+```{r}
+x <- 0:200
+y <- c()
+
+for (i in x){
+  profit <- min(i,150)*500-max(0, i-150)*1000-40000
+  y <- c(y, profit)
+}
+options(scipen=999)
+plot(x, y, main='Profit per Flight', xlab='Number of Passengers showing up', ylab='Profit', 'l')
+abline(h = 0, col = "red")
+```
