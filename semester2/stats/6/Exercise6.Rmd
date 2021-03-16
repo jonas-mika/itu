@@ -1,0 +1,148 @@
+---
+title: "Exercise 6"
+subtitle: "Applied Statistics, IT University of Copenhagen"
+output:
+  pdf_document: default
+documentclass: article
+classoption: a4paper
+references:
+- id: Verzani2014
+  type: book
+  title: "Using R for Introductory Statistics"
+  author:
+  - family: Verzani
+    given: John
+  issued:
+    year: 2014
+  publisher: CRC Press
+---
+
+T = Theoretical Exercise, R = R Exercise
+
+# Preparation
+
+* Read pages 92, 96--99, 102--108, 111--113, 132--139 from @Verzani2014.
+
+# Problems
+
+## 1. Hair vs. Eye Colour (T)
+
+To investigate the relations between hair color and eye colour, the hair color and eye color of 5383 was recorded. The data are given in Table 1. Eye color is encoded by the values 1 (Light) and 2 (Dark), and hair color by 1 (Fair/red), 2 (Medium), and 3 (Dark/black). By dividing the numbers in the table by 5383, the tble is turned into a joint probability distribution for random variables X (hair color) taking values 1 to 3 and Y (eye color) taking values 1 and 2.
+
+```{r, echo=FALSE}
+co <- matrix(c(1168,825,305,573,1312,1200),byrow=TRUE,nrow=2)
+rownames(co)<-c("Light","Dark")
+colnames(co)<-c("Fair/Red","Medium","Dark/black")
+dimnames(co)<-list("Eye color"=rownames(co),"Hair color"=colnames(co))
+
+library(knitr)
+library(kableExtra)
+kable(co, format = "latex", caption = "Relation between hair color and eye color.", booktabs = T) %>%
+  kable_styling() %>%
+  add_header_above(c(" ", "Hair color" = 3), bold = T) %>%
+  group_rows(index = c("Eye color" = 2)) 
+```
+
+
+(a) Determine the joint and marginal probability distributions of $X$ and $Y$.
+
+(b) Find out whether $X$ and $Y$ are dependent or independent. 
+
+## 2. Joint distribution (T)
+
+Let X and Y be continuous random variables with the joint probability density function
+\begin{equation}
+  f(x,y)=\left\{\begin{tabular}{ll} $cx+1$ & if $x,y\geq0,x+y<1$ \\ 0 & otherwise. \end{tabular}\right.
+\end{equation}
+
+(a) Find the constant c. 
+
+(b) Compute the marginal distribution $f_X(x)$.
+
+(c) Compute $P(Y<2X^2)$.
+
+## 3. Covariance and Correlation (T)
+
+Show that the correlation between X and Y is simply the covariance of the corresponding standardised scores, i.e, 
+\begin{equation}
+\rho(X,Y) = \mathrm{Cov}\left [\frac{X-E[X]}{ \sqrt{\mathrm{Var}[X]}}, \frac{Y-E[Y]}{ \sqrt{\mathrm{Var}[Y]}} \right].
+\end{equation}
+
+## 4. Correlation Coefficient (R)
+
+(a) The data set `normtemp (UsingR)` contains body measurements for 130 healthy, randomly selected individuals. The variable `temperature` measures normal body temperature, and the variable `hr` measures resting heart rate. Make a scatter plot of the two variables. What does the plot show you? Find the Pearson correlation coefficient. How does the estimate relate to the scatter plot?
+
+```{r}
+require('UsingR')
+data(normtemp)
+plot(normtemp$temperature, normtemp$ht,
+     main='Scatterplot of Temperature and Heart Rate',
+     xlab='Temperature',
+     ylab='Heartrate')
+correlation.coefficients <- cor(normtemp, method='pearson')
+print(correlation.coefficients)
+```
+
+
+(b) The data set `nym.2002 (UsingR)` contains information about the 2002 New York city marathon. What do you expect the correlation between age and finishing time to be? Make a scatter plot and compute the correlation coefficient. Does the result match your expectation? 
+
+```{r}
+# we would expect a positive correlation (the older the runner, the longer the running time)
+data("nym.2002")
+plot(nym.2002$age, nym.2002$time, 
+     main='Scatterplot between Age of Runner and Finishing Time', 
+     xlab='Age', ylab='Time')
+correlation.coefficients <- cor(subset(nym.2002, method='pearson')
+print(correlation.coefficients)
+```
+
+
+(c) The `batting` set (`UsingR`) data set contains baseball statistics for the 2002 Major League Baseball season. What is the correlation between the number of strikeouts (`SO`) and the number of home runs (`HR`)? Make a scatter plot to see whether there is any trend. Does the data suggest that in order to hit a lot of home runs one should strike out a lot?
+
+## 5. Sampling from a Joint Probability Distribution (R)
+
+Let $X$ and be $Y$ be continuous random variables with the joint probability density function $f(x,y)$. In general, one can draw samples $(x^{(n)},y^{(n)})$ from the joint probability density of two random variables factoring the probabity density as $f(x,y)=f(y|x) f(x)$ and first drawing a sample $x^{(n)}$ for $X$ from the marginal density $f(x)$ and then the sample $y^{(n)}$ for $Y$ from the conditional density $f(y|x)$ conditioned on $x=x^{(n)}$.
+
+Now, assume that $f(x)=1$ for $0<x<1$, $f(x)=0$ otherwise; and 
+\begin{equation}
+f(y|x)=  \left\{ \begin{tabular}{ll}
+                  $y - x+ 1$ & if $-1+ x \leq y < x$ \\
+                  $-y + x + 1$ & if $x \leq y < 1+x$ \\
+                  0 & otherwise.
+               \end{tabular}\right.
+\end{equation}
+
+ Implement a computer program that draws samples from $f(x,y)$ by using the random number generator for uniformly distributed random variables in R. 
+
+## 6. Covariance, Correlatedness and Independence (R)
+
+Load the data set by copying the data file from course webpage to your working directory and typing `load("mypnts.Rdata")`. 
+
+(a) Make a scatter plot of the points. Are the $x$ and $y$ coordinates correlated?
+
+(b) Estimate the *covariance matrix* of the data set. It is a $2 \times 2$ matrix containing the all the pairwise covariances, i.e., 
+\begin{equation}
+\mathbf{C} = 
+\begin{pmatrix} \mathrm{Cov}(X,X)\quad \mathrm{Cov}(X,Y)\\
+                \mathrm{Cov}(Y,X)\quad \mathrm{Cov}(Y,Y)
+\end{pmatrix}
+\end{equation}
+What can you see from the covariance matrix estimate?
+
+(c) Apply the mapping
+\begin{equation}
+x' = a x + b y \quad \text{and} \quad y'=c x + d y,
+\end{equation}
+to the points where $a=0.07$, $b=0$, $c=1$,and $d=0.42$. This process is called *whitening*. 
+
+(d) Plot the mapped points (use the option 'asp=1' that gives unity aspect ratio), and their marginal distributions (`densityplot`) on both $x'$ and $y'$ axis. Compute the covariance matrix estimate for the mapped points. Are the mapped points uncorrelated? How about independent? Can you see why the mapping is called whitening?
+
+(e) Apply rotation to the mapped points 
+\begin{equation}
+x'' = cos(\alpha) x' - sin(\alpha) y' \quad \text{and} \quad y''=sin(\alpha) x' +  cos(\alpha)y',
+\end{equation}
+where $\alpha=-\pi/6$.
+
+Plot the rotated, mapped points, and the marginals on the new axes. Are the rotated, mapped coordinates uncorrelated? How about independent? 
+
+(f) What did you learn from this exercise? Does the result generalise?

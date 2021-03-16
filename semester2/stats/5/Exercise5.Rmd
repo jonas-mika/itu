@@ -80,9 +80,6 @@ Variance:
 Variance is a measure of how spread out the values in a distribution are. In our example, a low variance means the sums that we roll will usually be very close to one another. By contrast, the variance is large when the sums that we roll are frequently distant values. The way that we calculate variance is by taking the difference between every possible sum and the mean. Then we square all of these differences and take their weighted average.
 
 $$
-Var[T] = E[(T-E)^2] = E[T^2] - E[T] = \sum_{i=1}^{8} i^2\cdot \frac{1}{8} - E[T] = (\frac{1}{8} + \frac{4}{8} + \frac{9}{8} + \frac{16}{8} + \frac{25}{8} + \frac{36}{8} + \frac{49}{8} + \frac{64}{8}) - 4.5 = 25.5 - 4.5 = 21
-$$
-$$
 Var[T] = E[(T-E)^2] = \sum_{i=1}^8  \frac{(i-4.5)^2}{8} = 2(\frac{49}{32} + \frac{25}{32} + \frac{9}{32} + 
 \frac{1}{32}) = 5.25
 $$
@@ -114,7 +111,6 @@ E[X] = 0
 $$
 
 Variance:
-
 
 
 
@@ -156,7 +152,7 @@ Given is a random variable $X$ with the probability density function $f$ given b
 (a) Determine the distribution function $F_X$.
 
 The distribution function $F_X$ is the antideriative of the probability density 
-function $f$ onb tge interval $0 \le x \le 1$.
+function $f$ on the interval $0 \le x \le 1$.
 
 $$
 F_X(x)= 
