@@ -1,0 +1,112 @@
+Exercises 08
+
+1. Graph Algorithms
+--------------------------
+Prim's Algorithm (MST sucessively from starting node):
+
+AB - BC - CD - ED
+
+Kruskal's Algorithm (MST from ordered edge list):
+
+ED - BC - CD - AB
+
+Dijkstra's Algorithm (SPT from source node):
+
+AB - AD - BC - ED (directed egdes)
+
+distTo: [0, 20, 27, 25, 26]
+
+2. Scaling of Edge Weights
+---------------------------
+By scaling all edge weights, the choice at each cut still remains the same:
+
+Consider a set of crossing edges {e_1, e_2, ..., e_k} each associated to a positive constant. By proof of the cut property, the edge with minimal weight must be in the MST of the graph that was partitioned. The overall logical order of weights of the crossing edges {e_1, e_2, ..., e_k} is maintained when multiplying each edge by a positive constant.  
+
+Assume: e_1 < e_2 < ... < e_k (by cut property e_1 is part of the graph's MST)
+
+To proof: ce_1 > ce_2 > ... > ce_k | *(1/c) => doesn't change order
+
+3. Maximum Spanning Tree
+--------------------------
+The maximum spanning tree is the opposite of the minimum spanning tree, meaning a spanning tree (consists of all nodes, acyclic and undirected) that is maximal in the way that there is no other spanning tree whose sum of edge weights is higher, thus maximum spanning tree. 
+The procedure of finding the maximum spanning tree should be the same as finding the minimum spanning tree. However, at each cut during the process we now choose the maximum edge. This guarantees that we will find the Maximum ST.
+
+Prim: Choose the maximum edge from the frontier at each iteration
+Kruskal: Sort Edges by descending weight until V-1 acyclic edges are chosen
+
+4. MST
+-------------------------
+a. A graph's smallest edge necessarily needs to be in its MST (this can easily be seen in Kruskal's algorithm: We sort the edges in ascending weight order and then add the edges to the MST such that they don't create cycles. Since the first/ smallest edge cannot create a cycle, it must be in the MST)
+
+b. Yes, it's possible.
+
+c. Only, if it does not create a cycle. Therefore it is not every min-edge.
+
+5. Shortest Path Tree
+------------------------
+False. The solution to the shortest path can differ. 
+As an example consider the following simple graph for illustration:
+
+A - 1 - C 
+|5      | 1
+B - 1 -  D
+
+The shortest path from A -> B in the original graph is A-C-D (weight: 3)
+Adding a constant, ie. 5 to each edge, changes this:
+Now the path A-C-D has summed edge wight of 3+15=18, while the simple path A-B has a summed edge weight of 5+5=10
+
+
+6. Uniqueness of MST for graphs with unique edge weights
+------------------------
+Proof by contradiction:
+Consider two distinct MST with a vertex and (distinct) edge set T=(V,E) and T'=(V, E')for some graph G. Now consider the smallest edge e of G between two arbitrary 
+vertices x-y and consider  that it is part of T, but not of T' (since they are 
+distinct). By the cut property, this is a contradiction, since the smallest edge of
+a graph must be part of the MST
+
+7. Multiple MSTs for graphs with nonunique edge weights 
+------------------------
+
+8. Deletion of non-disconnecting Edge
+-----------------------
+We can consider two cases: 
+    1. The disconnected edge was part of the MST. In that case we have 
+        a disconnected MST (cut) on which we need to find the new minimal edge that
+        that connects the two partitions. We can solve this problem by iterating 
+        over all edges and O(E) and find keep track of the minimal edge that is 
+        crossing.
+    2. The disconnected edge was not part of the MST, in that case we just
+        have to assure ourselves that our MST is still complete, by iterating over 
+        its edges in order to verify that the deleted edge was not part of the MST.
+
+9. Line Graph
+-----------------------
+Pre-Processing:
+Create an array of length V (number of vertices) in the line graph that stores the 
+position of the vertices from left-to-right (alternatively from right-to-left). Ie. the leftmost is has a value of 0 in the array, its adjacent vertex has value 1 and so 
+forth.
+
+Shortest Path:
+The shortest path for an arbitrary u and v in the set of vertices can now easily 
+be obtained through the following computation:
+
+|index u - index v| (#abs(index_u - index_v))
+
+
+
+EXAM QUESTION 4
+--------------------------
+4A. Correct, we add the edge weights on the shortest path as follows:
+    4+8+1+13=27
+
+4B. Dijkstra algorithm has a (worst-case) general running time of O(E*log(V)). 
+    In a looped tree the number of edges is V-1+Leaf Notes and thereby grows linearly
+    when increasing the number of vertices. We can therefore write the running time 
+    in Big-O notation as O(V*log(V))
+
+    However, since there always exists only one possible shortest path from each 
+    vertex u to each vertex v.
+
+4C. We can improve Dijkstra's running time using fibonacci heap implementation 
+    for our priority queue implementation that keeps track of the considered edges to
+    relax. The running time of this 
