@@ -96,6 +96,10 @@ correlation.coefficients <- cor(subset(nym.2002, method='pearson')
 print(correlation.coefficients)
 ```
 
+```{r}
+typeof(2)
+```
+
 
 (c) The `batting` set (`UsingR`) data set contains baseball statistics for the 2002 Major League Baseball season. What is the correlation between the number of strikeouts (`SO`) and the number of home runs (`HR`)? Make a scatter plot to see whether there is any trend. Does the data suggest that in order to hit a lot of home runs one should strike out a lot?
 

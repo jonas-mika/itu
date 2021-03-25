@@ -1,0 +1,105 @@
+---
+title: "Applied Statistics 2021 - Exercise 8"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# 1. Mean and median of two datasets (Theory)
+
+Consider two datasets $x_1, \dots, x_n$ and $y_1, \dots, y_m$. Note that they have different lengths. Let $\bar{x}$ be the sample mean of the first, and $\bar{y}$ the sample mean of the second. Consider the combined dataset $x_1, \dots, x_n, y_1, \dots, y_m$ with $m + n$ elements, obtained by concatenating the two original datasets.
+
+ a. Is it true that the sample mean of the combined dataset is equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
+ b. Consider the case where $m = n$, i.e. the two datasets have the same size. In this special case, is the sample mean of the combined dataset equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
+ c. Consider now the sample medians $Med_x$ and $Med_x$ of the two datasets, in the general case of $m \ne n$. Is it true that the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
+ d. In the special case of $m = n$, is the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
+
+# 2. Recognizing plots (Theory)
+
+Consider the following distributions:
+
+ - $N(0,1)$
+ - $N(0, 8)$
+ - $N(5, 2)$
+ - $Exp(2)$
+ - $Exp(1/2)$
+ 
+The following plots report histograms, kernel density estimates, and empirical distribution functions, each for a different dataset of 150 points generated from the above distributions.
+For each plot, say which type of plot it is (i.e. if it's a histogram, a kernel density estimate or an empirical distribution function), and identify from which of the above distributions it was generated.
+
+```{r eval=FALSE, include=FALSE}
+#CODE HIDDEN
+```
+
+# 3. Chopsticks factory (Theory)
+
+You are running a chopstick factory: due to the production process, the chopsticks are not of the exactly same length. As part of quality control you want to check that all chopsticks have approximately the same length.
+Suppose you produce 2000 chopsticks each day:
+
+ a. Choose an appropriate model for the chopsticks length. _Hint_: consider the model usually used to account for random variations in productions, experimental measures, etc.
+ b. Let $x_i$ be the length of the $i$-th chopstick produced today. At the end of the day you see that $\sum_i x_i = 45999$ and $\sum_i x_i^2 = 1058019$. Estimate $\mu$ and $\sigma^2$ for the distribution you chose in point a. _Hint_: look closely at how the variance is estimated and rework the formula so to be able to use the available data.
+ c. Give an estimate of the probability that the length of a random chopstick is within the interval $[22.5, 23.5]$.
+ 
+# 4. Simple Statistics (R)
+ 
+Consider the `firstchi` dataset, available in the `UsingR` package, which you can load using the `library(UsingR)` statement. Using R functions, compute the following numerical statistics for the dataset. 
+ 
+ - the sample mean
+ - the sample variance
+ - the 30th empirical percentile
+ - the median
+ - the MAD
+ - the IQR
+ 
+You can refer to Section 2.3 of _Using R for introductory statistics_.
+ 
+# 5. Plotting distributions (R)
+ 
+The `diamond` dataset of the `UsingR` package contains the price in Singapore dollars of 48 diamond rings, along with their size in carats.
+
+ 1. Plot the kernel density estimate of prices. Try different bandwidths. How many modes are there? Look also at the empirical cumulative distribution function. Discuss your findings.
+ 2. Plot a scatterplot of prices versus sizes. Does any relation between the two quantities show up?
+ 
+# 6. New York marathon (R)
+
+The `nym.2002` dataset (in the UnsingR package) contains information about the times taken by participants of the 2002 New York marathon, along with information like age and gender.
+First of all, bring the dataset into scope by loading the UsingR library: `library(UsingR)`.
+
+ a. Plot the kernel density estimate of the `time` column. Given that we have other information available in the dataset, is such a histogram informative? Discuss about this.
+ b. Consider the variable age in combination with `time`. Compute the median time for each age group. To this end, you can use the `aggregate` function, which takes two vectors of the same length (the first one are the values, the other the grouping variables) and a function to aggregate the values belonging to the same group.
+ Build the following plot: on the $x$ axis we have the age, and on the $y$ axis we have the corresponding median time. What do you observe?
+ c. Plot the kernel density estimate for each age group. To do so, you can use the following tools:
+ 
+   1. Get the set of ages in the dataset using the `unique` function on the `age` column of the dataframe
+   2. Select the rows corresponding to an age using the `subset` function, which is described on page 159 of Verzani's book. In short, you can use `subset(dataframe, subset = column_name == value)` to select all the rows with the given `value` in the column `column_name`.
+  
+ What do you observe in the plots? What might be a possible explanation? Is the median used in the previous point a good summary for each group?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

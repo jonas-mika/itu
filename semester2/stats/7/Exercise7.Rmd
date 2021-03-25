@@ -19,9 +19,9 @@ references:
 
 # Preparation
 
-* Read pages 72--77, 236--240 from @Verzani2014.
+-   Read pages 72--77, 236--240 from @Verzani2014.
 
-# Problems 
+# Problems
 
 T=Theoretical Exercise, R=R-Exercise
 
@@ -31,46 +31,165 @@ Let $X$ and $Y$ be two independent random variables where $X \sim \mathrm{Ber}(p
 
 ## 2. Casino La Cella Fortuna (T)
 
-The casino La bella Fortuna is for sale and you think you might want to buy it, but you want to know how much money you are going to make. All the present owner can tell you is that the roulette game Red or Black is played about 1000 times a night, 365 days a year. Each time it is played you have probability 19/37 of winning the player’s bet of 1 EUR and probability 18/37 of having to pay the player 1 EUR.
+The casino La bella Fortuna is for sale and you think you might want to buy it, but you want to know how much money you are going to make. All the present owner can tell you is that the roulette game Red or Black is played about 1000 times a night, 365 days a year. Each time it is played you have probability 19/37 of winning the player's bet of 1 EUR and probability 18/37 of having to pay the player 1 EUR.
 
-Explain in detail why the law of large numbers can be used to determine the
-income of the casino, and determine how much it is.
+Explain in detail why the law of large numbers can be used to determine the income of the casino, and determine how much it is.
 
 ## 3. Central Limit Theorem (T)
 
-Let $X_1, X_2,\ldots$ be a sequence of independent $N(0, 1)$ distributed random
-variables. For $n = 1,2, \ldots$, let $Y_n$ be the random variable, defined by
-$Y_n = X_1^2 + \ldots + X_n^2$.
+Let $X_1, X_2,\ldots$ be a sequence of independent $N(0, 1)$ distributed random variables. For $n = 1,2, \ldots$, let $Y_n$ be the random variable, defined by $Y_n = X_1^2 + \ldots + X_n^2$.
 
 (a) Show that $E[X_i^2]=1.$
 
-(b) One can show—using integration by parts—that $E[X_i^4]=3$. Deduce from this that $\mathrm{Var}(X_i^2)=2.$
+(b) One can show---using integration by parts---that $E[X_i^4]=3$. Deduce from this that $\mathrm{Var}(X_i^2)=2.$
 
 (c) Use the central limit theorem to approximate $P(Y_{100} > 110)$.
 
+> *see* **Dekking et. al,** *p. 200*
 
 ## 4. Sum of Random Variables (R)
 
-Assume you have $n$ dice you throw simultaneously. The sum of outcomes can be characterised by the formula $X=X_1+X_2+...+X_n$. Simulate the sum for thousand times using a couple of different values for $n$. Plot the histogram of the outcomes (`hist`) for each values of $n$ you chose. What is the distribution like when $n=2$? What can you see when you increase $n$?  
+Assume you have $n$ dice you throw simultaneously. The sum of outcomes can be characterised by the formula $X=X_1+X_2+...+X_n$. Simulate the sum for thousand times using a couple of different values for $n$. Plot the histogram of the outcomes (`hist`) for each values of $n$ you chose. What is the distribution like when $n=2$? What can you see when you increase $n$?
+
+```{r}
+roll.dice <- function() {
+  sample.space <- 1:6
+  return (sample(sample.space, 1))
+}
+
+roll.n.dice <- function(n) {
+  ans <- 0
+  for (i in 1:n) {
+    ans = ans + roll.dice()
+  }
+  return (ans)
+}
+
+simulate <- function(m, n) {
+  results <- c()
+  # build up vector with simulation outcomes
+  for (i in 1:n) {
+    results <- c(results, roll.n.dice(m))
+  }
+  # plot simulation as histogram
+  hist(results, 
+       xlab=paste('Sum of', m, 'Dice Rolls'), 
+       ylab='Frequency', 
+       main=paste('Simulation of', m, 'dice rolls (', n, 'times )'))
+}
+
+
+# client code
+for (i in 1:5) {
+  simulate(i, 10000)
+}
+```
 
 ## 5. Michelson Experiment (R)
 
-In 1879, A.A. Michelson made a famous experiment to determine the speed of light, the data set is available as `Michelson(HistData)`. The velocity estimates are $v=299000 \mathrm{km}/\mathrm{s} + \delta v$ where $\delta v$ is the velocity value saved in the data set. 
+In 1879, A.A. Michelson made a famous experiment to determine the speed of light, the data set is available as `Michelson(HistData)`. The velocity estimates are $v=299000 \mathrm{km}/\mathrm{s} + \delta v$ where $\delta v$ is the velocity value saved in the data set.
 
 (a) Study the examples shown by typing '?Michelson'.
 
+```{r}
+require(HistData)
+# View(Michelson)
+head(Michelson)
+```
+
 (b) Make density plot of the measurements together with data together with the individual estimates and true speed of light.
 
-(c) Assume that the velocity estimates are independent and identically distributed. Compute an estimate for the speed of light and compare to the true value known today. Add the estimate to the plot.
+```{r}
+# from https://www.space.com/15830-light-speed.html#:~:text=The%20speed%20of%20light%20in,can%20travel%20faster%20than%20light.
+speed.of.light <- 299792 
+```
 
-(d) Use Chebychev's inequality to find out an upper bound for the probability that the speed of light was equal or further away from the value known today. 
+```{r}
+hist(Michelson$velocity, 
+     main='Histogram of Velocity Values', 
+     xlab='Velocity Values')
 
-(e) After looking closer at the data set do you have any reservations about the assumptions made above?
+hist(Michelson$velocity + 299000, 
+     main='Histogram of Estimated Speed of Light',
+     xlab='Speed of Light')
+
+abline(v=speed.of.light, col='red')
+```
+
+```{r}
+plot(Michelson$velocity, type='l', 
+     main='Velocity Values from Michelson Measures of Speed of Light',
+     xlab='Experiment', 
+     ylab='Velocity Value') 
+# abline(h = 900, col='red')
+
+plot(Michelson$velocity + 299000, type='l', 
+     main='True Velocity Estimate from Michelson Measures of Speed of Light', 
+     xlab='Experiment', 
+     ylab='Velocity Estimate')
+abline(h = speed.of.light, col='red')
+```
+
+(b) Assume that the velocity estimates are independent and identically distributed. Compute an estimate for the speed of light and compare to the true value known today. Add the estimate to the plot.
+
+```{r}
+# assuming independence and identical experimental conditions the estimate of speed is the sample mean of the values added by the velocity constant
+sample.mean <- mean(Michelson$velocity + 299000)
+
+plot(Michelson$velocity + 299000, type='l', 
+     main='True Velocity Estimate from Michelson Measures of Speed of Light', 
+     xlab='Experiment', 
+     ylab='Velocity Estimate')
+abline(h = sample.mean, col='blue') # estimate of Michelson experiments
+abline(h = speed.of.light, col='red') # speed of light as known today
+legend("topright", legend=c("Velocity Estimate", "Sample Mean", "True Speed of Light"),
+       col=c("black", "red", "blue"), lty=1:2, cex=0.8)
+```
+
+(b) Use Chebychev's inequality to find out an upper bound for the probability that the speed of light was equal or further away from the value known today.x
+
+```{r}
+# chebychevs inequality says that an upper bound for the probability that the speed of light, which we will denote as the continuous random variable X, was equal or greater than the actual speed of light is 
+# 1/a2 Var(X)
+c.inequality.p <- var(Michelson$velocity) * mean(Michelson$velocity - 734.5) ** 2
+c.inequality.p
+```
+
+(b) After looking closer at the data set do you have any reservations about the assumptions made above?
+
+```{=html}
+<!-- -->
+```
+    Looks wrong :/
 
 ## 6. Central Limit Theorem (R)
 
-As a simulated experiment, draw $n$ independent samples from Gamma distribution with shape parameter $a=7.1$ and scale parameter $s=1.44$, that is, $X_i\sim \Gamma(a,s)$, $i=1,2,\ldots,n$. Repeat the experiment $m$ times 
+As a simulated experiment, draw $n$ independent samples from Gamma distribution with shape parameter $a=7.1$ and scale parameter $s=1.44$, that is, $X_i\sim \Gamma(a,s)$, $i=1,2,\ldots,n$. Repeat the experiment $m$ times
 
 (a) Use the central limit theorem to compare the sample mean and variance of the standardised average to the theoretic values.
 
 (b) Plot the histogram for the standardized average. How far are you from the theoretic density that you will get on the limit?
+
+```{r}
+# mean and variance of the Gam(7.1, 1.44) distribution
+pdf <- dgamma(0:100, shape=7.1, scale=1.44)
+samples <- rgamma(1000, shape=a, scale=s)
+mean <- mean(samples)
+variance <- var(samples)
+plot(dist, type='l', main='Gam(7.1, 1.44)')
+legend('topright', legend=c(paste('Mean:',mean), paste('Variance:', variance)))
+```
+
+```{r}
+# draw n samples from Gam(a=7.1, s=1.44)
+a <- 7.1
+s <- 1.44
+for (n in seq(1000,10000, by=1000)) {
+    sample <- rgamma(n, shape=a, scale=s)
+    print(paste('Number of Independent Samples:', n))
+    print(paste('Mean:', mean(sample)))
+    print(paste('Sample Variance:', var(sample)))
+    print('-------------')
+    hist(sample)
+}
+```
