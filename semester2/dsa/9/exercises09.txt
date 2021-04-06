@@ -1,0 +1,15 @@
+Exercises 9 - Strings, Radix Sort and Quicksort
+
+1. Tracing Quicksort
+-----------------------------
+Quicksort is a fast, in-place, recursive, comparable algorithm that has a good-performing average case.
+It is based on the idea of partitioning an array, which means to reorder the array in a way that the for some pivot element
+all element that are smaller are to the left of the pivot element and all elements larger are to the right. This ensures
+that the pivot element is at its final (sorted) position in the array after the partitioning.
+
+Input: E A S Y Q U E S T I O N
+
+lo  j   hi  0 1 2 3 4 5 6 7 8 9 10 11
+
+0       11  
+
