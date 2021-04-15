@@ -1,0 +1,42 @@
+Exercises 10 - Search Trees
+
+1. Shapes of BST
+---------------
+Handwritten Solution
+
+2. Insertion into 2-3 Search Tree
+---------------
+Handwritten Solution
+
+3. Minimum Height LLRB Tree Insertion
+---------------
+Handwritten Solution (Changing the insertion of the last two keys also produced a LLRB tree of height 1)
+
+4. Insertion into LLRB Search Tree
+---------------
+Handwritten Solution
+
+5. Worst-Case BST
+---------------
+Height n: 2^(n-1) trees (see Exercise 1, for n=4, we had 2^(4-1)=8 trees with height 4)
+Therefore there are also 2^(n-1) distinct ways to insert keys into an initially empty BST 
+
+6. Running Time range queries
+--------------
+Querying a BST ST (using .keys() ) for a range of keys (given they are in a logical order, ie. keys(lo, hi)) returns an iterable of
+all keys in the ST in sorted order. 
+The worst-case running time for this method is proportional to the height of the tree plus the number of keys in the range.
+
+Proof: The two-argument keys() method in a BST works in the following way:
+1- It searches the tree until it finds the element which is equal or higher than the lower bound.
+2- It adds the element to the queue and also adds all its right children that are inside the search range.
+3- It adds all the other elements which are inside the search range by doing an in-order search in the tree (but cutting branches once it finds elements outside the range).
+
+Step 1, searching the element which is equal or higher than the lower bound is a regular search in a BST and takes O(lg N) time, which is equal, in the worst case, to the tree height. Steps 2 and 3 combined take R operations, where R is the number of elements in the range searched. There may be a constant number of other compares, which are the cases where the method finds an element outside the range and stops the search on the current branch of the tree.
+Combining all the steps the two-argument keys() in a BST is at most proportional to the tree height plus the number of keys in the range.
+
+7. Counting Keys
+--------------
+
+8. Counting Odd Keys
+--------------
