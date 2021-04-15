@@ -1,0 +1,298 @@
+---
+title: "Applied Statistics 2021 - Exercise 9"
+output:
+  pdf_document: default
+  html_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Basic bootstrapping (Theory)
+
+We generate a single bootstrap dataset $x^*_1, \dots, x^*_n$ from the
+empirical distribution function of $$
+  1, 4, 6, 7, 8, 11, 15, 19
+$$
+
+a.  What is the probability that the bootstrap sample mean is equal to
+    19?
+
+Bootstrapping a single bootstrap dataset means to sample
+$len(x_1, ..., x_n)$ times with replacing, meaning that in the case of
+the given dataset we would sample 8 numbers at random. The sample mean
+of this bootstrapped dataset is:
+
+$$
+mean(x_1^*, ..., x_n^*)
+$$ And can only be 19, if all samples are a 19. The probability of this
+happening is therefore:
+
+$$
+P(mean == 19) = \frac{1}{8}^8 
+$$
+
+a.  What is the probability that the minimum of the bootstrap dataset is
+    1?
+
+The minimum of the sampled bootstrapped data is equal to 1, if we
+randomly sample the 1 at least once. We can give this probability by the
+complement event that *no* 1being bootstrapped.
+
+$$
+P(min == 1) = 1 - \frac{7}{8}^8 \sim 0.6564
+$$
+
+b.  What is the probability that in the bootstrap sample exactly two
+    elements are $\le 6$ and all the other are $\ge 15$?
+
+...
+
+# 2. Unbiased estimators (Theory)
+
+Consider a random sample $X_1, \dots, X_n$ from a uniform distribution
+in the interval $[-\theta, \theta]$, where $\theta$ is an unknown
+parameter. You are interested in estimating the values of $\theta$.
+
+a.  Show that $$
+      \hat{\Theta} = \frac{2}{n}(|X_1| + |X_2| + \dots + |X_n|)
+    $$ is an unbiased estimator for $\theta$. *Hint*: you may need to
+    use the *change of variable* formula (cfr. Chapter 7 of the book).
+
+An estimator is unbiased if $E[estimator] = parameter$ no matter the
+value of the parameter.
+
+1.  $$
+      \hat{\Theta} = \frac{2}{n}(|X_1| + |X_2| + \dots + |X_n|) \\
+      \hat{\Theta} = \frac{2}{n}(||
+    $$
+
+a.  Consider instead the problem of estimating $\theta^2$. Show that $$
+      T = \frac{3}{n}(X_1^2 + X_2^2 + \dots + X_n^2)
+    $$ is an unbiased estimator for $\theta^2$
+
+b.  Is $\sqrt{T}$ an unbiased estimator for $\theta$? If not, discuss
+    whether it has positive or negative bias.
+
+# 3. When the empirical bootstrapp fails (Theory)
+
+The empirical bootstrap is a very powerful tool[^1], but there are some
+situations where its usage is not appropriate.
+
+[^1]: So much that it has recently been
+    [defined](https://www.significancemagazine.com/science/608-what-is-the-bootstrap)
+    "the best statistical pain reliever ever produced", along with other
+    colorful names, see the acknowledgements section of Efron's
+    [original
+    paper](https://projecteuclid.org/download/pdf_1/euclid.aos/1176344552)
+
+Consider a dataset $x_1, x_2, \dots, x_n$, which is a realization of the
+random sample $X_1, X_2, \dots, X_n$ from a $U(0, \theta)$ distribution.
+Consider the following sample statistic $$
+  T_n =
+  1 - \frac{M_n}{\theta}
+$$ where $M_n$ is the maximum of $X_1, \dots, X_n$. Let $m_n$ be the
+maximum of the dataset $x_1, x_2, \dots, x_n$, and let
+$X_1^*, \dots, X_n^*$ be a bootstrap random sample from the empirical
+distribution function of our dataset. Finally, let $M_n^*$ be the
+maximum of the bootstrap sample, and consider $$
+  T^*_n =
+  1 - \frac{M_n^*}{m_n}
+$$
+
+a.  Compute $Pr[M^*_n < m_n]$.
+b.  Argue that $Pr[T^*_n \le 0] = Pr[M_n^* = m_n]$ and then use the
+    result from the previous point to show that $$
+    Pr[T_n^* \le 0] = 1 - \left( 1- \frac{1}{n}\right)^n
+    $$ Furthermore, argue that $Pr[T_n \le 0] = 0$.
+c.  Let $F_n(t) = Pr[T_n \le t]$ be the distribution function of $T_n$,
+    and let $F_n^*(t) = Pr[T_n^* \le t]$ be the distribution function of
+    the bootstrap statistic $T_n^*$. Using the result of point b, show
+    that the Kolmogorov-Smirnov distance between the two distributions
+    can be lower bounded as $$
+      \sup_{t\in \mathbb{R}} |F_n^*(t) - F_n(t)| \ge 
+      1 - \left( 1- \frac{1}{n}\right)^n
+    $$ *Hint*: consider what happens for $t=0$ to find the lower bound
+    to the Kolmogorov-Smirnov distance.
+d.  Use the fact that $e^{-x} \ge 1 - x$ to show that $$
+      1 - \left( 1- \frac{1}{n}\right)^n \ge
+      1 - e^{-1} \approx
+      0.632
+    $$
+
+Therefore, you have shown that the Kolmogorov-Smirnov distance between
+the two distributions is always larger than 0.632, independently of the
+number of samples $n$. Discuss, during the exercise session, the
+consequences of this fact for the bootstrap statistic $T_n^*$.
+
+# 4. Is this die fair? (R)
+
+Imagine a situation of purchasing an antique die from the internet for
+gambling. Before purchasing, you want to make sure that the die is fair.
+The seller provides 1000 samples of the outcomes available in the file
+`die_samples.Rdata` (you can access them by the command
+`load("die_samples.Rdata")`, provided that the file is in the same
+directory as you RMarkdown file). After loading the file, you can access
+the dataset under the name `die_samples`. Use bootstrap to determine
+whether the die is fair or not. Hint: investigate the indicator random
+variables $I_k=h_k(X), k=1,2,...,6$, where $I_k=1 \text{if} X=k$, and
+$I_k=0$, otherwise. What would be their expectation if the die was fair?
+Can you observe a systematic deviation?
+
+```{r}
+load("die_samples.Rdata")
+#View(die_samples)
+```
+
+```{r}
+table(die_samples)/length(die_samples)
+#c(as.data.frame(table(die_samples))['Freq'])[]
+```
+
+For a fair dice, with each event having equivalent probability of
+$\frac{1}{6}$ (Laplace-Experiment), we would expect to see 166
+occurrences of each event in the sample space for 1000 rolls of the dice
+on average. From the sample taken we can see that the measured frequency
+differs from this expected value. Using empirical bootstrapping, we can
+evaluate, whether this deviation was caused by pure chance or whether
+there is a systematic deviation in the die.
+
+```{r}
+k = 1
+bootstrapped_dies <- c()
+
+for (k in 1:6) {
+    for (i in 1:1000) {
+        sample <- sample(die_samples, size=length(die_samples), replace=T)
+        count <- 0
+        for (elm in sample) {
+            if (elm == k) { count = count + 1 }
+        }
+        bootstrapped_dies <- c(bootstrapped_dies, count)
+    }
+    print(paste("Mean Absolute Frequency for k=", k, ":", mean(bootstrapped_dies)))
+}
+
+```
+
+We see that on our bootstrapped datasets, the absolute frequencies of
+events happening still deviates from our expected value. Furthermore, we
+can observe that the die seems to be biased towards rolling a 6 and is
+likely to roll a 1 or 2.
+
+# 5. Bright stars (R)
+
+Consider the `brightness` dataset from the `UsingR` package, which
+collects the brightness of 966 stars. Using empirical bootstrap,
+estimate the probability $$
+Pr[|\bar{X}_n - \mu| > 0.1]
+$$ where $\mu$ is the *true* mean of the distribution. *Hint*: as we did
+in class, you will need to approximate this probability by replacing the
+sample mean with the bootstrapped mean, and $\mu$ with the sample mean.
+
+```{r}
+require(UsingR)
+```
+
+```{r}
+# View(brightness) # univariate datasets that collects the brightness of starts
+sample_mean <- mean(brightness)
+print(sample_mean)
+
+bootstrap_means <- c()
+bootstrap_means_sample_mean_difference <- c()
+bootstrap_means_sample_mean_deviation <- c()
+for (i in 1:1000) {
+    bootstrap_sample <- sample(brightness, size = length(brightness), replace = T)
+    bootstrap_means <- c(bootstrap_means, mean(bootstrap_sample))
+    bootstrap_means_sample_mean_difference <- c(bootstrap_means_sample_mean_difference, mean(bootstrap_sample) - sample_mean )
+    bootstrap_means_sample_mean_deviation <- c(bootstrap_means_sample_mean_deviation, abs(mean(bootstrap_sample) - sample_mean ))
+}
+plot(density(bootstrap_means))
+abline(v=sample_mean, col='blue')
+plot(density(bootstrap_means_sample_mean_difference))
+abline(v=.1, col='red')
+abline(v=-.1, col='red')
+plot(density(bootstrap_means_sample_mean_deviation), xlim=c(0, max(bootstrap_means_sample_mean_deviation)))
+abline(v=.1, col='red')
+```
+
+```{r}
+# develop the distribution function from the bootstrapped dataset
+bootstrap_means_deviation_distribution <- ecdf(bootstrap_means_sample_mean_deviation)
+
+plot(bootstrap_means_deviation_distribution)
+abline(v=.1, col='red')
+
+probability_outside <- 1 - (bootstrap_means_deviation_distribution(.1))
+probability_outside
+
+#x <- ecdf(bootstrap_means_sample_mean_deviation)
+#p <- 1 - x(5/60)
+```
+
+# 6. Parametric bootstrap (R)
+
+The dataset `arctic.oscillations` (in package UsingR) contains a time
+series from January to June 2002 of sea-level pressure measurement at
+the arctic, relative to some base line. Use parametric bootstrap to
+judge whether it is safe to assume that the measurements are samples
+from normal distribution or not. *Hint*: use parametric bootstrap in
+combination with the Kolmogorov-Smirnov distance, as we did in class.
+
+```{r}
+# View(arctic.oscillations)
+data("arctic.oscillations")
+data <- ts(arctic.oscillations)
+data <- data[!is.na(data)]
+
+# visualise sample
+plot(density(data, na.rm=T), main='Arctic Oscillations KDE')
+plot(ecdf(data), main='Arctic Oscillations ECDF')
+
+```
+
+Looks like quite a normal distribution. Let's test using parametric
+bootstrapping
+
+```{r}
+# we need estimates for the parameters of the normal distribution
+# we use the sample mean and sample variance
+# estimate model
+sample_mean <- mean(data)
+sample_var <- var(data)
+
+plot(density(data, na.rm=T), main='Arctic Oscillations KDE with Normal Fit')
+curve(dnorm(x, sample_mean, sample_var), col='red', add=T)
+
+plot(ecdf(data), main='Arctic Oscillations ECDF with Normal Fit')
+curve(pnorm(x, sample_mean, sample_var), col='red', add=T)
+```
+
+Let's now calculate the $t_{ks}$ (also the *Kolmogorov-Smirnov Distance*
+between our sample ECDF and the parametrically bootstrapped ECDF.
+
+```{r}
+ks_distance_norm_distribution <- function(bootstrapped_data, mean, var) {
+  empirical_distribution <- ecdf(bootstrapped_data)
+  max(abs(empirical_distribution(bootstrapped_data) - pnorm(bootstrapped_data, mean, var)))
+}
+ks_estimate <- ks_distance_norm_distribution(data, sample_mean, sample_var)
+
+bootstrap_ks <- c()
+for (i in 1:1000) {
+  bootstrap_sample <- rnorm(length(data), sample_mean, sample_var)
+  bootstrap_mean <- mean(bootstrap_sample)
+  bootstrap_var <- var(bootstrap_sample)
+  
+  bootstrap_ks <- c(bootstrap_ks, ks_distance_norm_distribution(bootstrap_sample, bootstrap_mean, bootstrap_var))
+}
+plot(density(bootstrap_ks), xlim=c(0, 0.06))
+abline(v=ks_estimate, col='red')
+```
+
+A normal distribution does not seem to be a good fit!

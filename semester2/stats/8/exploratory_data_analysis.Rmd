@@ -4,3 +4,35 @@ output: html_notebook
 ---
 
 # Exploratory Data Analysis
+
+## Sampling
+
+```{r}
+# sample from standard normal distribution
+samples <- rnorm(5000, mean=0, sd=100)
+```
+
+## Visual Data Exploration
+
+```{r}
+plot(samples, type='l')
+abline(h=mean(samples), col='red')
+abline(h=(mean(samples) + sd(sample)), col='blue')
+abline(h=(mean(samples) - sd(sample)), col='blue')
+hist(samples, freq=F)
+lines(density(samples), col='red')
+lines(seq(min(samples), max(samples), by=1), dnorm(seq(min(samples), max(samples), by=1), 0, 10), col='blue')
+boxplot(samples)
+```
+
+## Numerical Summaries
+
+```{r}
+summary(samples)
+var(samples)
+sqrt(var(samples))
+```
+
+```{r}
+plot(ecdf(samples))
+```

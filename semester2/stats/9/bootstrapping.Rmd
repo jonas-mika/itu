@@ -1,0 +1,86 @@
+---
+title: "Bootstrap"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bootstrapping the mean
+
+We can use the empirical bootstrap to look at the distribution of our estimate of the mean. Like in the book, consider the Old Faithful dataset.
+
+```{r}
+eruptions <- faithful$eruptions
+sample_mean <- mean(eruptions)
+bootstrap_means <- c()
+bootstrap_means_sample_mean_difference <- c()
+bootstrap_means_sample_mean_deviation <- c()
+for (i in 1:1000) {
+    bootstrap_sample <- sample(eruptions, size = length(eruptions), replace = TRUE)
+    bootstrap_means <- c(bootstrap_means, mean(bootstrap_sample))
+    bootstrap_means_sample_mean_difference <- c(bootstrap_means_sample_mean_difference, mean(bootstrap_sample) - sample_mean )
+    bootstrap_means_sample_mean_deviation <- c(bootstrap_means_sample_mean_deviation, abs(mean(bootstrap_sample) - sample_mean ))
+}
+plot(density(bootstrap_means))
+abline(v=sample_mean, col='blue')
+plot(density(bootstrap_means_sample_mean_difference))
+abline(v=5/60, col='red')
+abline(v=-5/60, col='red')
+plot(density(bootstrap_means_sample_mean_deviation), xlim=c(0, max(bootstrap_means_sample_mean_deviation)))
+abline(v=5/60, col='red')
+```
+
+We can use these bootstrapped means to bound the probability that the sample mean is away from the norm by more than, say, 5 seconds (note that the times in the dataset are in minutes, as opposed to the book, where they are in seconds).
+
+```{r}
+bootstrap_means_difference_distribution <- ecdf(bootstrap_means_sample_mean_difference)
+probability_outside <- 1 - (bootstrap_means_difference_distribution(5/60) - bootstrap_means_difference_distribution(-5/60))
+probability_outside
+
+x <- ecdf(bootstrap_means_sample_mean_deviation)
+p <- 1 - x(5/60)
+```
+
+# KS distance on the software dataset
+
+```{r}
+software<- c(0,0,0,2,4,6,8,9,10,10,10,12,15,15,16,21,22,24,26,30,30,31,33,36,44,50,55,58,65,68,
+             75,77,79,81,88,91,97,100,108,108,
+             112,113,114,115,120,122,129,134,138,143,
+             148,160,176,180,193,193,197,227,232,233,
+             236,242,245,255,261,263,281,290,296,300,
+             300,325,330,357,365,369,371,379,386,422,
+             445,446,447,452,457,482,529,529,543,600,
+             648,670,700,707,724,729,748,790,810,816,
+             828,843,860,865,868,875,943,948,983,990,
+             1011,1045,1064,1071,1082,1146,1160,1222,1247,1351,
+             1435,1461,1755,1783,1800,1864,1897,2323,2930,3110,
+             3321,4116,5485,5509,6150)
+plot(density(software))
+plot(ecdf(software))
+lambda_estimate = 1/mean(software)
+curve(pexp(x, rate=lambda_estimate), col='red', add=T)
+```
+
+Is the exponential distribution with the estimated parameter really a good fit?
+
+```{r}
+ks_distance_exp_distribution <- function(bootstrapped_data, lambda) {
+  empirical_distribution <- ecdf(bootstrapped_data)
+  max(abs(empirical_distribution(bootstrapped_data) - pexp(bootstrapped_data, rate = lambda)))
+}
+ks_estimate <- ks_distance_exp_distribution(software, lambda_estimate)
+
+bootstrap_ks <- c()
+for (i in 1:1000) {
+  bootstrap_sample <- rexp(length(software), lambda_estimate)
+  bootstrap_lambda <- 1/mean(bootstrap_sample)
+  bootstrap_ks <- c(bootstrap_ks, ks_distance_exp_distribution(bootstrap_sample, bootstrap_lambda))
+}
+plot(density(bootstrap_ks), xlim=c(0,0.2))
+abline(v=ks_estimate, col='red')
+```
+
+Looks like it's not!

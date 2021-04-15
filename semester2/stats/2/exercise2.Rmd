@@ -5,10 +5,11 @@
  date: '10/02/2021'
  output: pdf_document
 ---
- 
+
 ## Exercise 1
+
 The first exercise requires us to import the 'starwars' dataset from the 'dplyr' package. It contains 87 characters (rows) that are described by 13 features (columns). However, there are some missing values. Let's first load the dataset and inspect it.
- 
+
 ```{r, results='hide'}
 # load the package dpylr, the starwars package is now globally loaded
 require(dplyr)
@@ -19,7 +20,9 @@ require(dplyr)
 ```
 
 ### 1a. What is the Homeworld of 'Mace Windu'?
-To find the homeworld of Mace Windu, we first need to select the row containing Mace Windu. We do this by subsetting. Once we have the row, we can select the column holding the information of his homeworld using the $ operator.
+
+To find the homeworld of Mace Windu, we first need to select the row containing Mace Windu. We do this by subsetting. Once we have the row, we can select the column holding the information of his homeworld using the \$ operator.
+
 ```{r}
 mace_windu <- subset(starwars, name=='Mace Windu')
 mace_windu$homeworld
@@ -27,14 +30,18 @@ mace_windu$homeworld
 ```
 
 ### 1b. How many droids are in the dataset?
+
 The number of droids in the dataset is the length of the subset, fitered for all droids.
+
 ```{r}
 droids <- subset(starwars, species=='Droid')
 print(nrow(droids))
 ```
 
 ### 1c. Who are the shortest and tallest humans in the dataset?
+
 We, again fiter for all humans and find the min and max heights. Then we map those to the corresponding names.
+
 ```{r}
 humans_heights <- subset(starwars, species=='Human')$height
 max_height <- max(humans_heights, na.rm = TRUE)
@@ -45,6 +52,7 @@ subset(starwars, height==min_height)$name
 ```
 
 ### 1d. What is the mean and standard deviation of the height of all humans?
+
 ```{r}
 print(paste('Mean Height of Humans', mean(humans_heights, na.rm=TRUE)))
 print(paste('Standard Deviation of Heights of Humans', sd(humans_heights, na.rm=TRUE)))
@@ -53,6 +61,7 @@ print(paste('Standard Deviation of Heights of Humans', sd(humans_heights, na.rm=
 ## Exercise 2
 
 ### 2.1 Create the Dataframe
+
 Now, we should create our own dataframe. We therefore first create vectors corresponding to the columns.
 
 ```{r}
@@ -66,8 +75,8 @@ data = data.frame(name, sex, age, superhero, tattoos)
 data
 ```
 
-
 ### 2.2 What was the mean age of female and male pirates separately?
+
 ```{r}
 males <- subset(data, sex=='M')
 females <- subset(data, sex=='F')
@@ -76,8 +85,10 @@ mean(males$age, na.rm=TRUE)
 mean(females$age, na.rm=TRUE)
 ```
 
-### 2.3 
+### 2.3
+
 Adding a new column
+
 ```{r}
 tattoos.per.year <- data$tattoos / data$age
 data['tattoos.per.year'] <- tattoos.per.year
@@ -89,15 +100,17 @@ max.tattoo.per.year <- max(data$tattoos.per.year)
 subset(data, tattoos.per.year==max.tattoo.per.year)$name
 ```
 
-
 ### Exercise 2d - What was the median number of tattoos of pirates over the age of 20 whose favorite superhero is Spiderman?
+
 We first filter for all pirate over age 20, whose favorite superhero is Spiderman
+
 ```{r}
 over.20.and.spiderman <- subset(data, superhero=='Spiderman' & age>20)
 mean(over.20.and.spiderman$tattoos)
 ```
 
 ### Exercise 2e - Make a boxplot of the age distribution of the pirates
+
 ```{r}
 ages <- data$age
 boxplot(ages,
@@ -110,16 +123,15 @@ boxplot(ages,
 table(data$superhero)
 ```
 
-
 ```{r}
 pie(table(data$superhero),
     main='Distribution of Favorite Superheros')
 ```
 
-
 ## Exercise 3
 
 ### 3a. Normal Distributions
+
 ```{r}
 sample <- c(rnorm(5, mean=2, sd=1/5))
 
@@ -128,6 +140,7 @@ print(sd(sample))
 ```
 
 ### 3b. Histogram of Sample
+
 ```{r}
 hist(sample)
 ```
@@ -153,6 +166,3 @@ for (i in c(5, 100, 10000)) {
  plot.normal.distribution(i)       
 }
 ```
-
- 
- 

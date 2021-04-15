@@ -9,97 +9,283 @@ output:
 
 Consider two datasets $x_1, \dots, x_n$ and $y_1, \dots, y_m$. Note that they have different lengths. Let $\bar{x}$ be the sample mean of the first, and $\bar{y}$ the sample mean of the second. Consider the combined dataset $x_1, \dots, x_n, y_1, \dots, y_m$ with $m + n$ elements, obtained by concatenating the two original datasets.
 
- a. Is it true that the sample mean of the combined dataset is equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
- b. Consider the case where $m = n$, i.e. the two datasets have the same size. In this special case, is the sample mean of the combined dataset equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
- c. Consider now the sample medians $Med_x$ and $Med_x$ of the two datasets, in the general case of $m \ne n$. Is it true that the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
- d. In the special case of $m = n$, is the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
+a.  Is it true that the sample mean of the combined dataset is equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
+
+------------------------------------------------------------------------
+
+It is not true. Consider ie. the two univariate datasets of some random variable X with a realisation of {2,4,6} (length n=3) and another random variable Y with a realisation of {1,3} (length m=2).
+
+The individual sample means are computed as follows:
+
+$$
+\bar{x} = \frac{2 + 4 + 6}{3} = 4
+$$
+
+$$
+\bar{y} = \frac{1+3}{2}=2
+$$
+
+When concatenating the two datasets, the new sample mean of the combined dataset would be computed as follows:
+
+$$
+\bar{z} = \frac{2+4+6+1+3}{5} = 3.2
+$$
+
+This, however, is unequal to the formula provided above:
+
+$$
+\bar{z} = \frac{\bar{x}+\bar{y}}{2} = \frac{4+2}{2}=3
+$$
+
+a.  Consider the case where $m = n$, i.e. the two datasets have the same size. In this special case, is the sample mean of the combined dataset equal to $\frac{\bar{x} + \bar{y}}{2}$? If yes, provide a proof, if no, provide a counterexample.
+
+------------------------------------------------------------------------
+
+It is true, and can be proven as follows:
+
+$$
+\bar{z}=\frac{\hat{x}+\hat{y}}{2} \\
+= \frac{(\frac{x_1+ x_2 + ... + x_n}{n}) + (\frac{y_1+y_2+...y_n}{n})}{2}\\
+= \frac{(\frac{x_1+ x_2 + ... + x_n+y_1+y_2+...y_n}{n})}{2} \\
+= \frac{1}{2}\cdot\frac{x_1+ x_2 + ... + x_n+y_1+y_2+...y_n}{n} \\
+= \frac{x_1+ x_2 + ... + x_n+y_1+y_2+...y_n}{2n} 
+$$
+
+a.  Consider now the sample medians $Med_x$ and $Med_x$ of the two datasets, in the general case of $m \ne n$. Is it true that the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
+
+------------------------------------------------------------------------
+
+It is not true. Consider ie. the two unvariate samples of some random variable X with realisation {4,6,8}, m=3 and some random variable Y with realisation {2,3,4,6}, n=4. Note that $m\ne n$.
+
+The individual sample medians are computed as follows:
+
+$$
+Med(X)=6
+$$
+
+$$
+Med(Y)=3.5
+$$
+
+The sample medians of the concatenated dataset {2,3,4,**4**,6,6,8} has the following median:
+
+$$
+Med(Z)=4
+$$
+
+Since this is unequal to the median for the concatenated dataset suggested by the formula, we have proven the theorem to be wrong by contradiction.
+
+$$
+\frac{Med(X)+Med(Y)}{2} = \frac{9.5}{2} = 4.75
+$$
+
+a.  In the special case of $m = n$, is the sample median of the combined dataset is equal to $\frac{Med_x + Med_y}{2}$? If yes, provide a proof, if no, provide a counterexample.
+
+------------------------------------------------------------------------
+
+It is not true. Consider ie. the two unvariate samples of some random variable X with realisation {4,6,8, 10}, m=4 and some random variable Y with realisation {2,3,4,6}, n=4. Note that $m = n$.
+
+The individual sample medians are computed as follows:
+
+$$
+Med(X)=7
+$$
+
+$$
+Med(Y)=3.5
+$$
+
+The sample medians of the concatenated dataset {2,3,4,**4**,6,6,8,10} has the following median:
+
+$$
+Med(Z)=5
+$$
+
+Since this is unequal to the median for the concatenated dataset suggested by the formula, we have proven the theorem to be wrong by contradiction.
+
+$$
+\frac{Med(X)+Med(Y)}{2} = \frac{10.5}{2} = 5.5
+$$
 
 # 2. Recognizing plots (Theory)
 
 Consider the following distributions:
 
- - $N(0,1)$
- - $N(0, 8)$
- - $N(5, 2)$
- - $Exp(2)$
- - $Exp(1/2)$
- 
-The following plots report histograms, kernel density estimates, and empirical distribution functions, each for a different dataset of 150 points generated from the above distributions.
-For each plot, say which type of plot it is (i.e. if it's a histogram, a kernel density estimate or an empirical distribution function), and identify from which of the above distributions it was generated.
+-   $N(0,1)$
+-   $N(0, 8)$
+-   $N(5, 2)$
+-   $Exp(2)$
+-   $Exp(1/2)$
+
+The following plots report histograms, kernel density estimates, and empirical distribution functions, each for a different dataset of 150 points generated from the above distributions. For each plot, say which type of plot it is (i.e. if it's a histogram, a kernel density estimate or an empirical distribution function), and identify from which of the above distributions it was generated.
 
 ```{r eval=FALSE, include=FALSE}
 #CODE HIDDEN
 ```
 
+Dataset 1 (ECDF): N(0,1)
+
+Dataset 2 (KDE): N(0,1)
+
+Dataset 3 (Hist): Exp(1/2)
+
+Dataset 4 (KDE): Exp(2) (alternatively: Exp(2))
+
+Dataset 5 (Hist): N(0,8)
+
+Dataset 6 (Hist): N(5,2)
+
+Dataset 7 (KDE): Exp(2)
+
+Dataset 8 (ECDF): Exp(1/2)
+
+Dataset 9 (KDE): N(5,2)
+
+Dataset 10 (ECDF): N(5,2)
+
+Dataset 11 (ECDF): Exp(1/2)
+
+Dataset 12 (Hist): Exp(1/2)
+
+```{r}
+exp.2 <- rexp(150, 2)
+exp.0.5 <- rexp(150, .5)
+norm.01 <- rnorm(150)
+norm.08 <- rnorm(150, sd=8)
+norm.52 <- rnorm(150, mean=5, sd=2)
+
+plot.all <- function(data) {
+    hist(data)
+    plot(density(data))
+    plot(ecdf(data))
+}
+plot.all(norm.08)
+```
+
 # 3. Chopsticks factory (Theory)
 
-You are running a chopstick factory: due to the production process, the chopsticks are not of the exactly same length. As part of quality control you want to check that all chopsticks have approximately the same length.
-Suppose you produce 2000 chopsticks each day:
+You are running a chopstick factory: due to the production process, the chopsticks are not of the exactly same length. As part of quality control you want to check that all chopsticks have approximately the same length. Suppose you produce 2000 chopsticks each day:
 
- a. Choose an appropriate model for the chopsticks length. _Hint_: consider the model usually used to account for random variations in productions, experimental measures, etc.
- b. Let $x_i$ be the length of the $i$-th chopstick produced today. At the end of the day you see that $\sum_i x_i = 45999$ and $\sum_i x_i^2 = 1058019$. Estimate $\mu$ and $\sigma^2$ for the distribution you chose in point a. _Hint_: look closely at how the variance is estimated and rework the formula so to be able to use the available data.
- c. Give an estimate of the probability that the length of a random chopstick is within the interval $[22.5, 23.5]$.
- 
+a.  Choose an appropriate model for the chopsticks length. *Hint*: consider the model usually used to account for random variations in productions, experimental measures, etc.
+
+Measurement Errors are usually normally distributed. It therefore makes sense to model the length of the chopsticks as a normal distribution with the mean being the desired chopstick length and the standard deviation describing the variance in the dataset, ie. the spread of the lengths of the chopsticks that occurs due to inaccuracy in the production.
+
+a.  Let $x_i$ be the length of the $i$-th chopstick produced today. At the end of the day you see that $\sum_i x_i = 45999$ and $\sum_i x_i^2 = 1058019$. Estimate $\mu$ and $\sigma^2$ for the distribution you chose in point a. *Hint*: look closely at how the variance is estimated and rework the formula so to be able to use the available data.
+
+b.  Give an estimate of the probability that the length of a random chopstick is within the interval $[22.5, 23.5]$.
+
 # 4. Simple Statistics (R)
- 
-Consider the `firstchi` dataset, available in the `UsingR` package, which you can load using the `library(UsingR)` statement. Using R functions, compute the following numerical statistics for the dataset. 
- 
- - the sample mean
- - the sample variance
- - the 30th empirical percentile
- - the median
- - the MAD
- - the IQR
- 
-You can refer to Section 2.3 of _Using R for introductory statistics_.
- 
+
+Consider the `firstchi` dataset, available in the `UsingR` package, which you can load using the `library(UsingR)` statement. Using R functions, compute the following numerical statistics for the dataset.
+
+-   the sample mean
+-   the sample variance
+-   the 30th empirical percentile
+-   the median
+-   the MAD (Median Absolute Deviation = Median of the deviation of each element in X to the median)
+-   the IQR
+
+You can refer to Section 2.3 of *Using R for introductory statistics*.
+
+```{r}
+require(UsingR)
+# firstchi package (form library UsingR) is a univariate data vector containg the age of mother at birth of first child (length: 87)
+summary(firstchi)
+```
+
+```{r}
+mean <- round(mean(firstchi),2)
+variance <- round(var(firstchi), 2)
+# sd <- round(sd(firstchi), 2) # alternative sqrt(variance)
+percentile.30 <- quantile(firstchi, .3)
+median <- median(firstchi) # alternative: quantile(firstchi, .5)
+mad <- mad(firstchi)
+iqr <- IQR(firstchi) # alternatie quantile(x, .75) - quantile(x, .25)
+
+cat(paste(mean, variance, percentile.30, median, mad, iqr, sep='\n'))
+```
+
 # 5. Plotting distributions (R)
- 
+
 The `diamond` dataset of the `UsingR` package contains the price in Singapore dollars of 48 diamond rings, along with their size in carats.
 
- 1. Plot the kernel density estimate of prices. Try different bandwidths. How many modes are there? Look also at the empirical cumulative distribution function. Discuss your findings.
- 2. Plot a scatterplot of prices versus sizes. Does any relation between the two quantities show up?
- 
+1.  Plot the kernel density estimate of prices. Try different bandwidths. How many modes are there? Look also at the empirical cumulative distribution function. Discuss your findings.
+
+    1.  Plot a scatterplot of prices versus sizes. Does any relation between the two quantities show up?
+
+```{r}
+# plotting of pricces
+for (bw in c(1, 10, 100, 1000)) {
+    plot(density(diamonds$price, bw=bw, kernel='triangular'), col='red',
+         main=paste('KDE (bw =', bw, ')'),
+         xlab='Price')
+    abline(v=mean(diamonds$price), col='black', lty=2)
+    abline(v=median(diamonds$price), col='blue', lty=2)
+    #legend('topright', c('KDE', 'Median', 'Mean'))
+}
+
+max(table(diamond$price))
+```
+
+```{r}
+# ecdf of diamond prices
+plot(ecdf(diamonds$price), col='blue', 
+     main='Empirical (Cumulative) Distribution Function of Diamond Prices')
+```
+
+```{r}
+# association between size and price
+diamond.size <- diamonds$x*diamonds$y*diamonds$z
+plot(diamond.size, diamonds$price, col='blue', cex = .3,
+     main='Scatter between Diamonds Size and Price',
+     xlab='Diamond Size (Product of Dimension)',
+     ylab='Price')
+abline(lm(diamonds$price ~ diamond.size), col='black', lw=2)
+
+cor(diamond.size, diamonds$price) # strong positive correlation
+```
+
 # 6. New York marathon (R)
 
-The `nym.2002` dataset (in the UnsingR package) contains information about the times taken by participants of the 2002 New York marathon, along with information like age and gender.
-First of all, bring the dataset into scope by loading the UsingR library: `library(UsingR)`.
+The `nym.2002` dataset (in the UsingR package) contains information about the times taken by participants of the 2002 New York marathon, along with information like age and gender. First of all, bring the dataset into scope by loading the UsingR library: `library(UsingR)`.
 
- a. Plot the kernel density estimate of the `time` column. Given that we have other information available in the dataset, is such a histogram informative? Discuss about this.
- b. Consider the variable age in combination with `time`. Compute the median time for each age group. To this end, you can use the `aggregate` function, which takes two vectors of the same length (the first one are the values, the other the grouping variables) and a function to aggregate the values belonging to the same group.
- Build the following plot: on the $x$ axis we have the age, and on the $y$ axis we have the corresponding median time. What do you observe?
- c. Plot the kernel density estimate for each age group. To do so, you can use the following tools:
- 
-   1. Get the set of ages in the dataset using the `unique` function on the `age` column of the dataframe
-   2. Select the rows corresponding to an age using the `subset` function, which is described on page 159 of Verzani's book. In short, you can use `subset(dataframe, subset = column_name == value)` to select all the rows with the given `value` in the column `column_name`.
-  
- What do you observe in the plots? What might be a possible explanation? Is the median used in the previous point a good summary for each group?
+a.  Plot the kernel density estimate of the `time` column. Given that we have other information available in the dataset, is such a histogram informative? Discuss about this.
+b.  Consider the variable age in combination with `time`. Compute the median time for each age group. To this end, you can use the `aggregate` function, which takes two vectors of the same length (the first one are the values, the other the grouping variables) and a function to aggregate the values belonging to the same group. Build the following plot: on the $x$ axis we have the age, and on the $y$ axis we have the corresponding median time. What do you observe?
+c.  Plot the kernel density estimate for each age group. To do so, you can use the following tools:
 
+<!-- -->
 
+1.  Get the set of ages in the dataset using the `unique` function on the `age` column of the dataframe
+2.  Select the rows corresponding to an age using the `subset` function, which is described on page 159 of Verzani's book. In short, you can use `subset(dataframe, subset = column_name == value)` to select all the rows with the given `value` in the column `column_name`.
 
+What do you observe in the plots? What might be a possible explanation? Is the median used in the previous point a good summary for each group?
 
+```{r}
+plot(density(nym.2002$time/60), 
+     main='KDE of Finishing Times (in h)', 
+     xlab='Finishing Time (h)')
+```
 
+It is partially useful, since we expect high variation of finishing times in different age groups and genders. We somewhat only get a very aggregated picture of the finishing times and lose a lot of information, since we haven't yet accounted for variation in categorical variables.
 
+```{r}
+aggregation <- aggregate(nym.2002$time, by=list(nym.2002$age), median)
+aggregation
 
+plot(aggregation$Group.1, aggregation$x, type='b', 
+     main='Median Finishing Times for Ages', 
+     xlab='Age Group', 
+     ylab='Finishing Time')
+```
 
+```{r}
+age.groups <- c(paste(seq(0, 95, by = 10), seq(0 + 10 - 1, 100 - 1, by = 10),
+                sep = "-"), paste(100, "+", sep = ""))
+nym.2002$age.group <- cut(nym.2002$age, breaks = c(seq(0, 100, by = 10), Inf), labels = age.groups, right = FALSE)
+length(subset(nym.2002, age.group == age.groups[2]))
+age.groups[5]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+plot(density(subset(nym.2002, age.group == age.groups[1])$time), 
+    main=paste('KDE for Finishing Time for', age.groups[1]),
+    xlab='Finishing Time')
+```
