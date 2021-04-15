@@ -1,0 +1,12 @@
+2 9
+11:00:00 Chicago
+12:00:00 Seattle
+delay 12:00:00 3600
+delay 13:00:00 3600
+reroute 14:00:00 Spokane
+destination 12:00:00
+destination 13:00:00
+destination 14:00:00
+delay 11:00:00 3600
+destination 11:00:00
+destination 12:00:00

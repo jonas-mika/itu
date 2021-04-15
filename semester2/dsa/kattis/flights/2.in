@@ -1,0 +1,18 @@
+14 3
+09:00:00 Chicago
+09:00:03 Phoenix
+09:00:13 Houston
+09:00:59 Chicago
+09:01:10 Houston
+09:03:13 Chicago
+09:10:11 Seattle
+09:10:25 Seattle
+09:14:25 Phoenix
+09:19:32 Chicago
+09:19:46 Chicago
+09:21:05 Chicago
+09:22:43 Seattle
+09:22:54 Seattle
+next 09:21:45
+next 09:22:54
+count 09:00:30 09:10:25
