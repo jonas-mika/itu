@@ -53,4 +53,4 @@ for q in lines[n+1: len(lines)]:
     elif command == 'count':
         t1, t2 = datetime.strptime(
             query[1], '%H:%M:%S'), datetime.strptime(query[2], '%H:%M:%S')
-        print(len(ST.keys_range(t1, t2)))
+        print(ST.size_range(t1, t2))

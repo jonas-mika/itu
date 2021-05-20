@@ -1,0 +1,96 @@
+Exercise 11 - Amortised Analysis
+--------------------------------
+
+Exercise 1 - Examples of Amortised Analysis
+----------------------
+a) Worst-Case Number of Kilometers/ Day: 4km 
+   Amortised km/day: 4/7 = 4/ n days  
+
+b) X: Discrete Random Variable measuring the No. of Kilometers ran per Day 
+   E[X] = 3.5km // fair die
+   E[X] = 1km // enchanted die
+   E[X] = 6km // cursed die
+
+   Worst Case: 6km
+
+   Amortised Cost: 6km / n days
+
+c) Worst-Case: 2h, so 120min * 10 DKK = 1.200DKK
+   Amortised Cost: 1.200 / 12 = 100 DKK 
+
+d) Worst-Case: 200DKK (if ticket only used for one ride)
+   Amortised: 200DKK/10 = 20DKK
+
+Exercise 2 - Exam Question
+----------------------
+a) Stack (LIFO)
+b) return cap-x;
+c) 
+d) 
+
+Exercise 3 - Dynamic Arrays
+----------------------
+Shrinking the array by half, when n <= half of the array (w/2) would be wasteful and could result in O(n^2) time complexity in
+the worst case for the following sequence of pushes and pops:
+
+a = [ ,  ] (initial size of array==2)
+a.push(1) - [1, ]
+a.push(2) - [1,2, , ]
+a.push(3) - [1,2,3, ]
+a.push(4) - [1,2,3,4, , , , ]
+
+a.pop()   - [1,2,3, ]
+a.push(4) - [1,2,3,4, , , , ]
+
+a.pop()   - [1,2,3, ]
+a.push(4) - [1,2,3,4, , , , ]
+
+...
+
+Since, each resizing takes O(n), n operations of alternating push() and pop() would result in O(n^2) time complexity.
+
+Exercise 4 - Multi-Popping
+-----------------------
+# straightforward solution, however not amortised independent of parameter k
+def multi_pop(k):
+    for _ in range(k):
+        stack.pop()
+
+
+Exercise 5 - Multi-Pushing
+-----------------------
+Since every push() operation takes constant amortised time, we can simply iterate over the number of copies to be made and push 
+them individually. 
+
+def multi_push(k, e):
+    for _ in range(k):
+        stack.push(e)
+
+Another option is to keep track of the 'fullness' of the array and see whether or not an addition of k elements needs a call to 
+resize() or not. This would potentially involve less checks (from k to 1)
+
+def multi_push(k, e):
+    if fullness + k < len(self.stack):
+        for _ in range(k):
+            stack.push()
+    else: 
+        stack.resize()
+        for _ in range(k):
+            stack.push()
+
+Exercise 6 - Exam Question
+------------------------
+
+Exercise 7 - Set Union
+------------------------
+Implementing Union-Find Problem as an array of colors, where each color represents one set. We union() by giving the two input
+parameters the same color.
+
+Worst-Case Running Time:
+union() - depends on implementation, but at least recolour (in the worst case) n/2 elements (merging two big sets) => O(n)
+connected() - 2 Array Accesses and 1 Logical Comparison => O(1), constant time
+
+Exercise 8 - Unbounded Array Datastructure
+------------------------
+Can't we just use our dynamic arrays or single linked list data structures with have both constant time in pushed and pops?
+
