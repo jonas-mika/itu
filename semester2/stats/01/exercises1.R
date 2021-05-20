@@ -1,4 +1,5 @@
-# solutions to the small exercises in r from exercises 1
+# playing around with r in vim
 
-print(1+2*(3+4)) # ex1 
+test <- floor(runif(50, 0, 10))
 
+print(tesf)

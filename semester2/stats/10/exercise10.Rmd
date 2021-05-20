@@ -70,7 +70,7 @@ will derive a maximum likelihood estimator for $\alpha$.
 
 a.  Derive the loglikelihood function $\ell(\alpha)$
 b.  Compute the derivative $\ell'(\alpha)$ of the loglikelihood function
-c.  Derive the maximum likelihood estimator for $\alpha$
+c.  Derive the maximum likelihood estimator for $\al?pha$
 
 # 3. Linear models (Theory)
 
@@ -135,14 +135,14 @@ ml.estimations <- c()
 bad.estimations <- c()
 
 for (i in 1:1000) {
-    ml.estimations <- c(ml.estimations, maximum.likelihood.estimator.p(500))
-    bad.estimations <- c(bad.estimations, bad.estimator(500))
+    ml.estimations <- c(ml.estimations, maximum.likelihood.estimator.p(200))
+    bad.estimations <- c(bad.estimations, bad.estimator(200))
 }
 plot(density(ml.estimations), xlim=c(.2, .5),
      main="Distribution from Different Estimators")
 lines(density(bad.estimations), col='blue')
 abline(v=.3, col='red')
-legend(.4,35, legend=c("Max. Likelihood Estimator", "Bad Estimator", "Real p"),
+legend(.4,22, legend=c("Max. Likelihood Estimator", "Bad Estimator", "Real p"),
        col=c("black", "blue", "red"), lty=1:2, cex=0.8)
 #print(mean(estimations))
 #print(var(estimations))

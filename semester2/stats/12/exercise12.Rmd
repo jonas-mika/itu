@@ -1,0 +1,288 @@
+---
+title: "Exercise 12"
+subtitle: "Applied Statistics 2021, IT University of Copenhagen"
+output:
+  pdf_document: default
+documentclass: article
+classoption: a4paper
+references:
+- id: Verzani2014
+  type: book
+  title: "Using R for Introductory Statistics"
+  author:
+  - family: Verzani
+    given: John
+  issued:
+    year: 2014
+  publisher: CRC Press
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Preparation
+
+-   Read pages 294--302 from @Verzani2014.
+
+# Problems
+
+```{r, message=FALSE, include=FALSE}
+require(UsingR)
+```
+
+## 1. Born Babies (T)
+
+On average, the number of babies born in Cleveland, Ohio, in the month
+of September is 1472. On January 26, 1977 the city was immobilized by a
+blizzard. Nine months later, in September 1977, the recorded number of
+births was 1718. Can the increase of 246 be attributed to chance? To
+investigate this, the number of births in the month of September is
+modelled by a Poisson distributed random variable $T$ with parameter
+$\mu$, and we test $H_0:\  \mu=1472$.
+
+(a) What would you choose as the alternative hypothesis?
+
+(b) In which direction do values of $T$ provide evidence against $H_0$
+    (and in favour of $H_1$)?
+
+(c) Compute the $p$-value corresponding to $t=1718$.
+
+(d) What is your conclusion about whether the increase in births was
+    attributed to chance?
+
+Hint: you may use the fact that the Poisson distribution of $T$ can be
+approximated by an $N(\mu,\sqrt{\mu})$ distribution.
+
+------------------------------------------------------------------------
+
+a\. $H_1: \mu > 1472$
+
+b\. Higher values of $T$ provide evidence against the null-hypothesis
+and in favor of the alternative hypothesis. The p-val should therefore
+be computed as a right-tail probability.
+
+c\. For some month we find $t=1718$ as a realisation of the Poisson
+distributed random variable \$T\$, which models the number of births in
+the month of September. The p-value is the probability of observing an
+at least as extreme test statistic, assuming the null-hypothesis to be
+true. When approximating the Poisson distribution as a \$N(\\mu, \\mu)\$
+distribution, we can therefore compute:
+
+$$
+p-val = P(t \ge 1718 | H_0) = F(T\ge 1718) = 1-pnorm(1718, mean=1472, sd=\sqrt{1472}) = 0.434
+$$
+
+d\. The p-val is relatively high, meaning that a deviation of 246 births
+was within a somewhat expected deviation from the expected number of
+births in September (mathematically this makes sense, since the variance
+in the approximated normal distribution is high). For a standard
+significance/ risk level of $\alpha=0.05$, we would reject the
+alternative hypotheses and continue to consider the null hypotheses to
+be true, until we found further evidence against it.
+
+```{r}
+range <- seq(-2500, 5000, 100)
+plot(range, dnorm(range, mean=1472, sd=sqrt(1472)), type='l')
+c
+1-pnorm(1718, mean=1472,sd=sqrt(1472)) # [1] 0.433638
+```
+
+## 2. Type I and II errors (T)
+
+Let $T$ be a random variable following an $N(\mu,1)$ distribution.
+Assume testing the hypothesis $H_0: \mu=0$ against the alternative
+hypothesis $H_1: \mu \neq 0$ using the test statistic $T$.
+
+(a) With the decision to reject the null hypothesis if the realisation
+    $|t|>1$ what is the probability of committing a type I error?
+
+(b) Assuming that the true value of $\mu$ is 1, what is the probability
+    of committing a type II error?
+
+------------------------------------------------------------------------
+
+```{r}
+area_poly <- function(cur, cutoff=c(-1, 1), side=c(1,-1), col = "grey", border=NA, ...)
+{
+    # right cutoff
+    pos <- min(which(cur$x > cutoff[2]))
+    end <- length(cur$x)
+
+    polygon(x=c(cur$x[end:pos], cur$x[pos], cur$x[end]),
+          y=c(cur$y[end:pos], 0, 0), col=col, border=border, ...)
+  
+    # left cutoff
+    pos <- max(which(cur$x < cutoff[1]))
+    end <- 1
+    
+    polygon(x=c(cur$x[end:pos], cur$x[pos], cur$x[end]),
+          y=c(cur$y[end:pos], 0, 0), col=col, border=border, ...)
+}
+```
+
+```{r}
+cc <- curve(dnorm(x, mean = 0, sd = 1), from = -5, to = 5, n = 100, lwd = 2,
+            xlab = "", ylab = "Density", main='T assuming Null Hypothesis (N(0,1))', frame = F)
+area_poly(cc, cutoff = c(-1, 1), side=1, col = "red", density = 10)
+```
+
+```{r}
+cc <- curve(dnorm(x, mean = 1, sd = 1), from = -5, to = 5, n = 100, lwd = 2,
+            xlab = "", ylab = "Density", main='T assuming true expectation mu (N(1,1))', frame = F)
+area_poly(cc, cutoff = c(-1, 1), side=1, col = "gray", density = 100)
+```
+
+```{r}
+library(magrittr)
+type1.error <- (1 - (pnorm(1)-pnorm(-1))) %>% print() # type 1 error for T <- N(mu, 1)
+type2.error <- (pnorm(1, mean=1)-pnorm(-1, mean=1)) %>% print() # type 2 error
+```
+
+## 3. Coin flipping (T)
+
+Assume that you flipped a coin $N=11$ times. You got tails 7 times and
+heads 4 times, after which the coin fell into a well and you lost it.
+After the experiment you started to wonder whether the coin was fair.
+
+(a) Formulate test statistic, the null hypothesis and alternative
+    hypothesis for testing the fairness of the coin.
+
+(b) Was the coin fair? Assume 0.05 risk level.
+
+------------------------------------------------------------------------
+
+We are testing the hypothesis of whether the coin was fair, and want to
+assess the probability of rejecting the null hypothesis beyond
+reasonable doubt. By default, we assume the coin to be fair, such that:
+
+$$
+H_0: p=0.5 \\
+H_1: p\ne0.5
+$$
+
+We assume the coin to be fair, ie. the probability of getting 'H' is
+0.5, until we found significant evidence against it. The alternative
+hypothesis tests towards biases in both directions. This however could
+be adjusted, ie. through only testing towards bias in 'H' or 'T' through
+one-sided critical regions.
+
+Statistically, the sequence of observed results of the coin throw
+$\{X_1, X_2, ..., X_{11}\}$ is modeled as the realisation of the random
+Bernoulli distributed variable $X \sim Ber(p)$, where $p$ is the
+probability of getting heads. The observed sequence therefore follows a
+binomial distribution in $n=11$ independent trials $Bin(11, p)$.
+
+$$
+P(E | H_0) = {11 \choose 4} * 0.5^4 * 0.5 ^{7}= 0.1611328
+$$
+
+In this case, the p-val would not provide enough evidence against the
+null-hypothesis given a risk level of 0.05, that the coin was fair,
+since there is a 16% chance of observing only 4 heads in 11 throws, even
+if the coin is fair.
+
+## 4. Insurance (R)
+
+In the United States in 1998, the proportion of adults age 21--24 who
+had no medical insurance was 34.4 percent, according to the Employee
+Benefit Research Institute. A survey of 75 recent college graduates in
+this age range finds that 40 are without insurance. Does this support a
+difference from the nationwide proportion? Perform a test of
+significance and report the $p$-value. Is it significant?
+
+$$
+H_0: p=0.344 \\
+H_1: p>0.344 
+$$
+
+Critical Probability (p-value): P(Critical Event \| H_0 (assuming the
+null-hypotheses to be true)
+
+$$
+p-val = Bin(75, 0.344) = {75 \choose 40} \cdot 0.344^{40} * 0.656^{35} = 0.00033
+$$
+
+We would therefore reject the null-hypotheses (even with a extremely
+significant threshold) in favor of the alternative hypotheses, since it
+is highly unlikely that we observe that 40 out of 75 without an
+insurance, if we assume the 'true' probability of encountering a
+non-insured person to be 0.344.
+
+```{r}
+plot(1:75, dbinom(1:75, size=75, prob=0.344), type='h')
+plot(1:75, pbinom(1:75, size=75, prob=0.344), type='h')
+```
+
+```{r}
+significance.level <- 0.001 # extremly significant
+
+pval <- pbinom(40, size=75, prob=0.344, lower.tail = F) # choose(75, 40) * 0.344^40 * (1-0.344)^35
+print(pval)
+
+if (significance.level > pval) {
+    print('Rejected Null-Hypotheses in Favour of Alternative Hypothesis')
+}
+```
+
+## 5. Highway Toll (R)
+
+On a number of highways a toll is collected for permission to travel on
+the roadway. To lessen the burden on drivers, electronic toll-collection
+systems are often used. An engineer wishes to check the validity of one
+such system. She arranges to survey a collection unit for single day,
+finding that of 5,760 transactions, the system accurately read 5,731.
+Perform a one-sided significance test to see if this is consistent with
+a 99.9% accuracy rating at the 0.05 significance level. (Do you have any
+doubts that the normal approximation to the binomial distribution should
+apply here?)
+
+$$
+H_0: Accuracy = 99.9\% \\ 
+H_1: Accuracy \lt 99.9\%
+$$
+
+The p-value provides strong evidence against the null-hypothesis that
+the accuracy of the toll machine is 99.9%. Assuming the accuracy to be
+99.9%, the event that only 5.731 out of 5760 transactions are correctly
+performed, is significantly low. Given the 0.05 significance level, we
+would reject the null-hypothesis in favor of the alternative hypothesis
+and assume the toll machine to have lower 'real' accuracy scores.
+
+```{r}
+plot(5730:5760, dbinom(5730:5760, size=5760, prob=0.999), type='h')
+plot(5730:5760, pbinom(5730:5760, size=5760, prob=0.999), type='h')
+
+print(pbinom(5731, size=5760, prob=0.999))
+
+prop.test(x=5731, n=5760, p=0.999, alternative='less', correct = F)
+```
+
+## 6. Car Problems (R)
+
+Historically, a car from a given company has a 10% chance of having a
+significant mechanical problem during its warranty period. A new model
+of the car is being sold. Of the first 25,000 sold, 2,700 have had an
+issue. Perform a test of significance to see whether the proportion of
+these new cars that will have a problem is more than 10%. What is the
+p-value?
+
+$$
+H_0: Problem = 10\% \\ 
+H_1: Problem \gt 10\%
+$$
+
+$$
+p-val = {25000 \choose 2700} * 0.1^{2700} * 0.9^{22300} = 1.450357e-05
+$$
+
+Our test provides strong evidence against the null-hypothesis that only
+10% of the cars have significant mechanical problems during the warranty
+period. Even with a considerably low significance level, we would likely
+reject the null-hypothesis, in favor of the alternative hypothesis that
+in fact more than 10% of the cars have mechanical problems.
+
+```{r}
+plot(2300:2700, pbinom(2300:2700, size=25000, prob=0.1), type='h')
+
+print(pbinom(2700, size=25000, prob=0.1, lower.tail = F))
+```

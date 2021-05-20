@@ -1,0 +1,246 @@
+---
+title: "Applied Statistics 2021 - Exercise 11"
+output:
+  pdf_document: default
+  html_document: default
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Bags of potatoes (Theory)
+
+You bought 10 very large bags of potatoes.
+Assume that the 10 weights can be viewed as a realization of a random sample from a normal distribution with unknown parameters.
+Your measures give you the following data:
+
+-   Sample mean: 14.5 kg
+-   Sample standard deviation: 0.3 kg
+
+Construct a 95% confidence interval for the expected weight of a bag.
+
+In this theory exercise, we are trying to compute the confidence interval for a random sample of a normal distribution with unknown variance, ie.
+we are looking at the discrete random variable $X \sim N(\mu, \sigma^2)$ that represents the weight of a bag of potatoes.
+We are trying to find the 95% confidence interval for the sample mean, calculated as 14.5kg, meaning that for which interval around the sample mean can we be 95% confident that the true expectation is within the given interval.
+
+Since $\sigma$ is unknown, we have to slightly change the formula of the studentized mean, by substituting the estimator \$S_n\$ (the sample standard deviation) for the true standard deviation of the estimator:
+
+$$
+\frac{\bar{X_n}-\mu}{\sigma / \sqrt{n}} \to \frac{\bar{X_n}-\mu}{S_n / \sqrt{n}}
+$$
+
+This distribution follows as a *t-distribution* with parameter $m=n-1$, which we can use to compute the 95% CI.
+
+Using rewriting of the equation, we know that the confidence interval can be written as
+
+$$
+(\bar{x}_n-t_{n-1,a/2}  \frac{s_n}{\sqrt{n}}, \bar{x}_n + t_{n-1,a/2}  \frac{s_n}{\sqrt{n}})
+$$
+
+To compute the final interval, we need to compute the critical values $t_{n-1, a/2}$ for the \$(1-a)/cdot100\\%\$ CI and the plug the values into the formula:
+
+```{r}
+n <- 10
+alpha <- 0.05
+critical.value <- qt(1- (alpha / 2), n - 1)
+print(critical.value)
+```
+
+Since we are given the sample mean and standard deviation, we can plug the values into the formula and get the following 95% confidence interval for the population mean:
+
+$$
+(14.5-2.26 \frac{0.3}{\sqrt{10}}, 14.5 + 2.26 \frac{0.3}{\sqrt{10}}) \\
+(14.29, 14.71) 
+$$
+
+# 2. How many samples do we need? (Theory)
+
+Assume that we measure a person's height (in meters) and that the measurements are normal distributed with standard deviation $\sigma = 0.01$.
+How many measurements do we to make, if we want a 99% confidence interval no wider than 0.001 meters for the mean $\mu$?
+Please explain how you find the number of required measurements.
+
+We are given a discrete random variable $X \sim N(\mu, 0.01^2)$ with unknown expectation and known standard deviation that describes a person's height.
+We are now asking the question, how many \$n\$ samples we need in order to construct a 99% CI no wider than 0.001 meters for the mean of the distribution.
+
+We know that the 99% confidence interval for normal data with known variance is computable as follows:
+
+$$
+(\bar{x}_n-2.57\cdot\frac{0.01}{\sqrt{n}}, \bar{x}_n+2.57\cdot\frac{0.01}{\sqrt{n}})
+$$
+
+We are now asked for the value $n$ that makes this interval no wider than 0.001.
+We can rewrite the formula to exclude the sample mean.
+From the fact that the confidence interval is symmetric around the mean, we can say equivalently say that the deviation from the mean should be not greater than the threshold 0.001 / 2.
+
+$$
+2.57 \cdot \frac{0.01}{\sqrt{n}} \le \frac{0.001}{2} \\
+\frac{0.01}{\sqrt{n}} \le \frac{1}{5140} \\
+0.01 \le \frac{\sqrt{n}}{5140} \\
+\sqrt{n} \ge 51.4 \\
+n \ge 2641.96 \sim 2642 \\
+$$
+
+Thusly, we need at least 2642 samples of such a distribution in order to give such a close 99% confidence interval.
+
+# 3. Tomato sauce (Theory)
+
+A team of scientists is analyzing samples from bottles of tomato sauce, looking for traces of pesticides.
+They take a random sample of 10 bottles, with the assumption is that the samples are drawn from a normal distribution with unknown mean and standard deviation.
+The scientsts find that the sample mean is $\bar{x}_{10} = 1.05655721956321$ parts per million (ppm), with a sample standard deviation $s_{10} = 0.200131346424344$.
+The maximum limit prescribed by the law is 1.15 ppm.
+
+a.  The team of scientists wants to derive a *one sided* 90% confidence interval for the mean concentration of pesticides in the bottles, because they want to sue the tomato brand for having too many pesticides in their product. Which type of one sided interval should they use? Derive such an interval.
+b.  The tomato brand defends itself by deriving, from the very same data, another one sided 90% confidence interval. Which one? Compute it.
+c.  Which conclusions can be derived from these intervals?
+d.  The scientists are not yet convinced, therefore they perform a second experiment. This time they take a random sample of 100 bottles, finding the sample mean $\bar{x}_{100} = 1.14376626794198$ and the sample standard deviation $s_{100} = 0.173021605092371$. Recompute the confidence intervals of points a. and b. Is the tomato brand still able to defend itself?
+
+# 4. Simulating confidence intervals (R)
+
+In this first exercise you will build confidence intervals from different samples of a normal random variable.
+
+a.  Define a function `confidence_interval_normal` that accepts two parameters: a sample of elements and a confidence level.
+    Under the assumption of normality of the input data, build the confidence interval using the formula for normal variable with unknown mean and variance.
+    The function should return the interval as a two element vector: `c(lower, upper)`.
+    To get the quantiles of the t-distribution you can use the `qt` function: `qt(0.95, 19)` return the 0.95 quantile of the t-distribution with 19 degrees of liberty.
+    See `help(qt)` for more details.
+
+b.  Perform the following simulation: run 100 iterations, in each iteration take a sample of 10 elements using `rnorm(10, 150, 50)`.
+    For each such sample, use the function developed in the previous point to compute a 0.9 confidence interval relative to the data.
+    Count the number of intervals that *do not* contain the true mean of the distribution we are sampling from, that is `150`.
+    Is the result in line with your expectations?
+
+c.  Try to change the confidence level, setting it to 0.8 and 0.95.
+    How does the result change?
+
+```{r}
+# a
+confidence_interval_normal <- function(sample, confidence.level) {
+    n <- length(sample)
+    sample.mean <- mean(sample)
+    sample.sd <- sd(sample)
+    
+    # return automatically
+    c(sample.mean - (qt(1 - (1-confidence.level) / 2, n-1) * (sample.sd / sqrt(n))), 
+      sample.mean + (qt(1 - (1-confidence.level) / 2, n-1) * (sample.sd / sqrt(n))))
+}
+
+# verify fucntion with confidence interval from above
+norm.sample <- rnorm(10000, mean = 5)
+confidence_interval_normal(norm.sample, 0.99)
+```
+
+```{r}
+# 90% confidence interval
+runs <-  1000
+correctly_estimated <- 0
+
+for (i in 1:runs) {
+    sample <- rnorm(10, mean=150, sd=50)
+    confidence.interval <- confidence_interval_normal(sample, 0.9)
+    if (confidence.interval[1] <= 150 && confidence.interval[2] >= 150){
+        correctly_estimated <- correctly_estimated + 1
+    }
+}
+print(correctly_estimated / runs)
+```
+
+```{r}
+# 90% confidence interval
+runs <-  1000
+correctly_estimated <- 0
+
+for (i in 1:runs) {
+    sample <- rnorm(10, mean=150, sd=50)
+    confidence.interval <-  confidence_interval_normal(sample, 0.8)
+    if (confidence.interval[1] <= 150 && confidence.interval[2] >= 150){
+        correctly_estimated <- correctly_estimated + 1
+    }
+}
+print(correctly_estimated / runs)
+```
+
+# 5. Cats & confidence (R)
+
+The `cats` data set (available in `UsingR`) contains the bodyweight and heart weight of adult cats, along with their sex.
+
+(a) Compute the mean and the $90\%$ confidence intervals for the body weight and heart weight assuming normality of the samples.
+    Do the computation separately for the female and male cats.
+    (So you have to compute 4 confidence intervals).
+    Is there any difference between the results?
+    You can use the `confidence_interval_normal` function that you defined in the previous exercise.
+
+(b) Compute the one-sided 95% confidence intervals for the mean body weight of male cats and compare to the results you obtained at (a).
+
+```{r}
+library(UsingR)
+library(magrittr)
+female.cats <- subset(cats, Sex=='F')
+male.cats <- subset(cats, Sex=='M')
+
+print('Bodyweights')
+ci.bodyweight.female <- confidence_interval_normal(female.cats$Bwt, 0.9) %>% print()
+ci.bodyweight.male <- confidence_interval_normal(male.cats$Bwt, 0.9) %>% print()
+
+print('Heartweights')
+ci.heartweight.female <- confidence_interval_normal(female.cats$Hwt, 0.9) %>% print()
+ci.heartweight.male <- confidence_interval_normal(male.cats$Hwt, 0.9) %>% print()
+```
+
+```{r}
+one_sided_confidence_interval_norm <- function(sample, confidence.level) {
+    n <- length(sample)
+    sample.mean <- mean(sample)
+    sample.sd <- sd(sample)
+    
+    # return automatically
+    sample.mean - (qt(1 - (1-confidence.level), n-1) * (sample.sd / sqrt(n))) 
+}
+
+one.sided.ci.bodyweight.male <- one_sided_confidence_interval_norm(male.cats$Bwt, 0.95) %>% print()
+```
+
+# 6. Bootstrapping confidence intervals (R)
+
+Consider again the `cats` dataset of the previous exercise.
+Construct the 90% confidence intervals for the mean body weight of male cats by empirical bootstrap, using 500 bootstrap repetitions.
+Compare the result to those you got in Problem 1.\
+How do they compare with the intervals you found in the previous exercise?
+
+```{r}
+trim.off <- function(data, p) {
+    sorted.data <- sort(data)
+    n <- length(data)
+    lower.trim <- floor(1 + n * ((1-p)/2))
+    upper.trim <- n - lower.trim
+    
+    sorted.data[lower.trim : upper.trim]
+}
+```
+
+```{r}
+bootstrapped.ci <- function(sample, confidence.level, k=500) {
+    n <- length(sample)
+    sample.mean <- mean(sample)
+    sample.sd <- sd(sample)
+    
+    means <- c()
+    for (i in 1:k) {
+        bootstrapped.sample <- sample(sample, size=n, replace=T)
+        studentised.mean <- (mean(bootstrapped.sample) - sample.mean)  / (sd(bootstrapped.sample)/sqrt(n))
+        means <- c(means, studentised.mean)
+    }
+    trimmed.means <- trim.off(sort(means), confidence.level)
+    
+    upper <- (sample.mean - min(trimmed.means)) * ((sample.sd) / sqrt(n))
+    lower <- (sample.mean + min(trimmed.means)) * ((sample.sd) / sqrt(n))
+    
+    c(sample.mean - lower, sample.mean + upper)
+}
+
+# example
+bootstrapped.ci(male.cats$Bwt, 0.9)
+```

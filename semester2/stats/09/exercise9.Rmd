@@ -71,6 +71,9 @@ value of the parameter.
       \hat{\Theta} = \frac{2}{n}(||
     $$
 
+```{=html}
+<!-- -->
+```
 a.  Consider instead the problem of estimating $\theta^2$. Show that $$
       T = \frac{3}{n}(X_1^2 + X_2^2 + \dots + X_n^2)
     $$ is an unbiased estimator for $\theta^2$

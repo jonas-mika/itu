@@ -1,0 +1,353 @@
+---
+title: "Exercise 13"
+subtitle: "Applied Statistics 2021, IT University of Copenhagen"
+output:
+  pdf_document: default
+documentclass: article
+classoption: a4paper
+references:
+- id: Dekking2010
+  type: book
+  title: "A Modern Introduction to Probability and Statistics: Understanding why and how"
+  author:
+  - family: Dekking
+    given: F. M.
+  - family: Kraaikamp
+    given: C.
+  - family: Lopuhaä
+    given: H. P.
+  - family: Meester
+    given: L. E.
+  issued:
+    year: 2010
+  publisher: Springer-Verlag
+- id: Verzani2014
+  type: book
+  title: "Using R for Introductory Statistics"
+  author:
+  - family: Verzani
+    given: John
+  issued:
+    year: 2014
+  publisher: CRC Press
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Preparation
+
+-   Read pages 283--284, 305--307, 321--325 from @Verzani2014.
+
+# Exercises
+
+```{r, message=FALSE, include=FALSE}
+require(UsingR) 
+library(magrittr)
+library(ggplot2)
+```
+
+```{r}
+area_poly <- function(cur, cutoff=c(-1, 1), side=c(1,-1), col = "grey", border=NA, ...)
+{
+    # right cutoff
+    pos <- min(which(cur$x > cutoff[2]))
+    end <- length(cur$x)
+
+    polygon(x=c(cur$x[end:pos], cur$x[pos], cur$x[end]),
+          y=c(cur$y[end:pos], 0, 0), col=col, border=border, ...)
+  
+    # left cutoff
+    pos <- max(which(cur$x < cutoff[1]))
+    end <- 1
+    
+    polygon(x=c(cur$x[end:pos], cur$x[pos], cur$x[end]),
+          y=c(cur$y[end:pos], 0, 0), col=col, border=border, ...)
+}
+```
+
+## 1. One sample $t$-test (T)
+
+We perform a t-test for the null hypothesis $H_0 : \mu = 10$ by means of
+a dataset consisting of $n=16$ elements with sample mean 11 and sample
+variance 4. We use significance level 0.05.
+
+a.  Should we reject the null hypothesis in favor of $H_1: \mu \neq 10$?
+
+b.  What if we test against $H_1: \mu > 10$?
+
+------------------------------------------------------------------------
+
+Assuming normality of the data set (not explicitly mentioned in the task
+description, but since theoretical exercise, assume to not perform
+bootstrapping), we can compute the critical region for the test
+statistic
+
+$$
+T = \frac{\bar{X}_n-\mu_0}{S_n/\sqrt{n}}
+$$
+
+from the fact that this distribution follows a *t-distribution* in
+*m=n-1* degrees of freedom. The critical bounds for the alternative
+hypothesis $H_1: \mu \ne 10$ (two-sided hypothesis testing), are
+therefore given as the critical regions for the studentised mean
+distribution:
+
+```{r}
+sample.mean <-  11
+sample.var <- 4
+n <- 16
+
+t <- ((sample.mean - 10) / (sqrt(sample.var) / sqrt(16))) %>% print() # under null hypothesis
+```
+
+```{r}
+alpha <- 0.05
+critical.regions <- c(qt(alpha/2, df=n-1), qt(alpha/2, df=n-1, lower.tail = F))
+print(critical.regions)
+
+xs <- seq(- 5, 5, by = 0.01)
+cc <- curve(dt(x, df=n-1), from=-5, to=5, n=100, type = "l", main = "Student's T-distribution PDF (with critical regions for a=0.05)", las=1)
+area_poly(cc, cutoff = critical.regions, side=1, col = "red", density = 10)
+abline(v=t, col='red')
+```
+
+Since our tests statistic $t$ is outside of the critical regions, we
+assume the null hypothesis to be true until we found significant
+evidence against it.
+
+b\.
+
+## 2. Easter Eggs (T)
+
+Assume that you got six similar Easter eggs with 20g of chocolate
+reported in each. After taking one more lecture in Applied Statistics,
+you want to further investigate whether it is plausible that the eggs
+really contain 20g chocolate or if the egg producer is cheating. You
+weight the eggs and obtain the following six observations for the
+chocolate weight:
+
+|       Chocolate contents (g)       |
+|:----------------------------------:|
+| 20.1, 19.1, 18.2, 20.2, 19.6, 19.1 |
+
+You may assume that you measurement is a realization of a random sample
+from a normal distribution $N(\mu, \sigma^2)$, where $\mu$ represents
+the true average contents.
+
+(a) Formulate the appropriate null hypothesis and alternative
+    hypothesis.
+
+(b) Which test is appropriate for testing the hypothesis? Explain why.
+
+(c) Compute the value of the test statistic and report your conclusion
+    at significance level $\alpha = 0.05$.
+
+(d) Compute the corresponding left tail $p$-value. Is it likely to
+    observe these measurements under the null hypothesis?
+
+a\.
+
+$$
+H_0: \mu = 20 \\
+H_1: \mu \ne 20 or H_1: \mu \lt 20
+$$
+
+b\. In this specific scenario we would test with a one-sample *t-test*
+to evaluate the hypotheses at hand, since we only deal with one sample,
+namely the measurement of weights of the chocolate and can assume
+normality of the data, such that the random variable $X$ representing
+the weight of chocolate in a single easter egg, normally distributed
+with $N(\mu, \sigma^2)$, where $\mu$ is the true mean average weight of
+the chocolate.
+
+c\. The test statistic $T$ to be used is the studentised mean, that
+describes the standardised difference of the sample mean from the
+hypothesised mean:
+
+$$
+T = \frac{\bar{X}_n-\mu_0}{S_n/\sqrt{n}} = 0.3048679
+$$
+
+```{r}
+data <- c(20.1, 19.1, 18.2, 20.2, 19.6, 19.1)
+studentised.mean <- ((mean(data) - 20) / (sd(data) / sqrt(length(data)))) %>% print()
+```
+
+Since the test statistic of the studentised mean follows a
+t-distribution in n-1 degrees of freedom, we can either compute the
+critical regions and observe whether or not our test statistic falls
+into them or compute the p-value. For the alternative hypothesis, that
+the true mean is not equal to 20 (not specifying in which direction it
+deviates), we can compute the critical regions as follows:
+
+```{r}
+n <- length(data)
+alpha <- 0.05
+critical.regions <- c(qt(alpha/2, df=n-1), qt(alpha/2, df=n-1, lower.tail = F))  %>% print()
+```
+
+d\. The left-tail p-value corresponds to the probability that we get at
+an as small value for the studentised mean, while assuming the null
+hypothesis to be true.
+
+$$
+p-val = P(T \le -2.022734) = 0.04951219 
+$$
+
+```{r}
+pt(-2.022734, df=n-1)
+```
+
+We would reject the null hypothesis in favour of the alternative
+hypothesis. Furthermore we can conclude that we would assume the true
+expectation of the weight of the chocolate in an easter egg to be lower
+than 20.
+
+## 3. Two-sample $t$-test (T)
+
+The data in Table 28.3 (pp. 425, @Dekking2010) represents salaries (in
+pounds Sterling) in 72 randomly selected advertisements in The Guardian
+(April 6, 1992). When the range was given in the advertisement, the
+midpoint of the range is reproduced in the table. The data are salaries
+coreresponding to two kinds of occupations ($n=m=72$): (1) Creative,
+media, and marketing and (2) education. The sample mean and sample
+variance of the two datasets are, respectively:
+
+$$
+\begin{equation*}
+\begin{split}
+    (1)\ \bar{x}_{72} = 17 410 \textrm{ and } s_x^2= 41 258 741,\\
+    (2)\ \bar{y}_{72} = 19 818 \textrm{ and } s_y^2= 50 744 521,
+\end{split}
+\end{equation*}
+$$
+
+Suppose that the datasets are modeled as realizations of normal
+distributions with expectations $\mu_1$ and $\mu_2$, which represent the
+salaries for occupations (1) and (2).
+
+a.  Test the null hypothesis that the salary for both occupations is the
+    same at level $\alpha = 0.05$ under the assumption of equal
+    variances. Formulate the proper null and alternative hypotheses,
+    compute the value of the test statistic, and report your conclusion.
+
+b.  Do the same without the assumption of equal variances.
+
+c.  As a comparison, one carries out an empirical bootstrap simulation
+    for the nonpooled studentized mean difference. The bootstrap
+    approximations for the critical values are $c_l^* = -2.004$ and
+    $c_u^*=2.133$. Report your conclusions about the salaries on the
+    basis of the bootstrap results.
+
+## 4. Significance test for the mean (R)
+
+The United States Department of Energy conducts weekly phone surveys on
+the price of gasoline sold in the United States. Suppose one week the
+sample average was \$4.03, the sample standard deviation was \$0.42, and
+the sample size was 800. Perform a one-sided significance test of
+$H_0:\mu=4.00$ against the alternative $H_\mathrm{A}:\mu>4.00$.
+
+```{r}
+sample.mean <- 4.03
+sample.sd <- 0.42
+n <- 800
+alpha <- 0.05
+
+t <- ((sample.mean - 4) / (sample.sd / sqrt(800))) %>% print()
+p.val <- pt(t, df=n-1, lower.tail=F) %>% print()
+if (p.val < alpha) {
+    print('Rejected Null Hypothesis in favor of Alternative Hypothesis')
+}
+critical.regions <- c(qt(alpha/2, df=n-1), qt(alpha/2, df=n-1, lower.tail = F)) %>% print()
+
+```
+
+## 5. Two-sample tests of centre (R)
+
+The data set `normtemp (UsingR)` contains body measurements for 130
+healthy, randomly selected individuals. The variable `temperature`
+contains normal body temperature data and the variable \`gender contains
+gender information, with male coded as 1 and female as 2. Can you assume
+that the groups have similar standard deviation? Is the sample
+difference across two groups statistically significant? Is the
+conclusion the same if you made a different assumption of the standard
+deviation?
+
+```{r}
+males <- subset(normtemp, gender == 1)
+females <- subset(normtemp, gender == 2)
+boxplot(males$temperature, females$temperature, labels=c('MALE', 'FEMALE'), 
+        main='Boxplot of Body Temperature for Males and Females', 
+        xlab='Gender (Left: Male; Right: Female', 
+        ylab='Body Tempearture')
+```
+
+$$
+H_0: \mu_M = \mu_F \\
+H_0: \mu_M \ne \mu_F
+$$
+
+```{r}
+# assuming equal standard deviation (bootstrapping with pooled-variance)
+x <- males$temperature
+y <- females$temperature
+
+pooled.variance <- sqrt(var(x)/length(x) + var(y)/length(y))
+studentised.mean <- (mean(x) - mean(y)) / pooled.variance
+
+alpha <- 0.05; t.distribution.samples = c();
+
+for (i in 1:10000) {
+  bootstrap.x <- sample(x, length(x), replace=TRUE)
+  bootstrap.y <- sample(y, length(y), replace=TRUE)
+  bootstrap.pooled.variance <- sqrt(var(bootstrap.x)/length(x) + var(bootstrap.y)/length(y))
+  bootstrap.studentised.mean <- ( (mean(bootstrap.x)-mean(bootstrap.y)) - (mean(x)-mean(y)) ) / bootstrap.pooled.variance
+  t.distribution.samples <- c(t.distribution.samples, bootstrap.studentised.mean)
+}
+quantile(t.distribution.samples, probs=c(alpha/2, 1-alpha/2))
+mean(t.distribution.samples < studentised.mean)
+```
+
+Our analysis shows evidence against the null-hypothesis. Given the
+boxplots, this is also somewhat expected.
+
+## 6. Bootstrapping in two-sample tests (R)
+
+For the `babies (UsingR)` data set, the variable `age` contains the
+recorded mom's age and `dage` contains the dad´s age for several
+different cases in the sample. Do a significance test of the null
+hypothesis of equal age against a one-sided alternative that dads are
+older in the sample population. Use a non-normal model with
+bootstrapping.
+
+```{r}
+dad.ages <- babies$dage
+mum.ages <- babies$age
+
+boxplot(dad.ages, mum.ages, labels=c('MALE', 'FEMALE'), 
+        main='Boxplot of Body Temperature for Males and Females', 
+        xlab='Gender (Left: Male; Right: Female', 
+        ylab='Body Tempearture')
+```
+
+```{r}
+# assuming non normality of the data (non-pooled studentised mean)
+x <- dad.ages
+y <- mum.ages
+
+nonpooled.var <- sqrt( var(x)/length(x) + var(y)/length(y) )
+nonpooled.studentised.mean <- (mean(x) - mean(y)) / nonpooled.var
+
+alpha <- 0.05; t.distribution.samples = c();
+
+for (i in 1:10000) {
+  bootstrap.x <- sample(x, length(x), replace=TRUE)
+  bootstrap.y <- sample(y, length(y), replace=TRUE)
+  bootstrap.pooled.variance <- sqrt(var(bootstrap.x)/length(x) + var(bootstrap.y)/length(y))
+  bootstrap.studentised.mean <- ( (mean(bootstrap.x)-mean(bootstrap.y)) - (mean(x)-mean(y)) ) / bootstrap.pooled.variance
+  t.distribution.samples <- c(t.distribution.samples, bootstrap.studentised.mean)
+}
+quantile(t.distribution.samples, probs=c(alpha/2, 1-alpha/2))
+mean(t.distribution.samples < studentised.mean)
+```
